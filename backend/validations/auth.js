@@ -25,10 +25,9 @@ const registerSchema = Joi.object({
 });
 
 // Schema for validating the request body during user login.
-
 const loginSchema = Joi.object({
 	email: Joi.string().email().required().messages({
-		'string.email': 'Please enter a valid email',
+		'string.email': 'Please enter a valid email address',
 		'any.required': 'Email is required',
 	}),
 
