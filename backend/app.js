@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const config = require('./utils/config');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
-const userRouter = require('./controllers/user');
-const authRouter = require('./controllers/auth');
+// const userRouter = require('./controllers/user');
+const authRouter = require('./routes/auth');
+const transactionRouter = require('./routes/transaction');
 
 const app = express();
 
@@ -25,8 +26,9 @@ app.get('/', (req, res) => {
 	res.send('Hello world');
 });
 
-app.use('/api/users', userRouter);
+// app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
+app.use('/api/transactions', transactionRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
