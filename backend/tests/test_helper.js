@@ -1,5 +1,7 @@
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 
 const demoTransactions = [
 	{
@@ -58,14 +60,14 @@ const getAuthTokenAndUserId = async () => {
 	const passwordHash = await bcrypt.hash('secret', 10);
 	const user = new User({
 		name: 'Test User',
-		username: 'testuser',
+		email: 'testuser@gmail.com',
 		passwordHash,
 	});
 
 	await user.save();
 
 	const userForToken = {
-		username: user.username,
+		email: user.email,
 		id: user._id.toString(),
 	};
 

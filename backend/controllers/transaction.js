@@ -1,6 +1,7 @@
 const transactionRouter = require('express').Router();
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
+const { transactionSchema } = require('../validations/transaction');
 
 //! Gets all user transaction
 const getAllTransaction = async (request, response, next) => {
@@ -14,6 +15,12 @@ const getTransaction = async (request, response, next) => {
 
 //! Add transaction
 const postTransaction = async (request, response, next) => {
+	try {
+		await transactionSchema.validateAsync(request.body);
+	} catch (e) {
+		return response.status(400).json({ error: e.details[0].message });
+	}
+
 	return response.status(501).json({ error: 'Not Implemented' });
 };
 
