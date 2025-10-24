@@ -1,11 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./utils/config');
-const middleware = require('./utils/middleware');
+const middleware = require('./middlewares/common');
 const logger = require('./utils/logger');
 // const userRouter = require('./controllers/user');
 const authRouter = require('./routes/auth');
 const transactionRouter = require('./routes/transaction');
+const userExtractor = require('./middlewares/userExtractor');
 
 const app = express();
 
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
 
 // app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
-app.use('/api/transactions', transactionRouter);
+app.use('/api/transactions', userExtractor, transactionRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

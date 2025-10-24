@@ -13,7 +13,6 @@ const getTransaction = async (request, response, next) => {
 	return response.status(501).json({ error: 'Not Implemented' });
 };
 
-//! Add transaction
 const postTransaction = async (request, response, next) => {
 	try {
 		await transactionSchema.validateAsync(request.body);
@@ -21,7 +20,14 @@ const postTransaction = async (request, response, next) => {
 		return response.status(400).json({ error: e.details[0].message });
 	}
 
-	return response.status(501).json({ error: 'Not Implemented' });
+	const newTransaction = new Transaction({
+		...request.body,
+		user: request.user._id,
+	});
+
+	const savedTransaction = await newTransaction.save();
+
+	return response.status(201).json(savedTransaction);
 };
 
 //! Update transaction

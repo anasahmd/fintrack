@@ -1,5 +1,6 @@
 const catchAsync = require('../utils/catchAsync');
 const transactionController = require('../controllers/transaction');
+const userExtractor = require('../middlewares/userExtractor');
 
 const transactionRouter = require('express').Router();
 

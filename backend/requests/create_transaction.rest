@@ -1,0 +1,12 @@
+POST http://localhost:3000/api/transactions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFuYXNhaG1hZDAyMzlAZ21haWwuY29tIiwiaWQiOiI2OGY0OTg3ODhjMTQ1ODAxMmY5ZTIyNmUiLCJpYXQiOjE3NjEzMDIxMzB9.I8biue7LP1Czhar7rmIdED3NxwKqe28r8cuwvLEOnDQ
+
+{
+  "amount": 20,
+  "type": "Expense",
+  "category": "Food",
+  "description": "Chai",
+  "tags": ["chai"],
+  "date": "2025-10-01T10:00:00.000Z" 
+}
