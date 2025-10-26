@@ -56,6 +56,14 @@ const transactionsInDb = async () => {
 	return transactions.map((t) => t.toJSON());
 };
 
+const nonExisitingId = async () => {
+	const transaction = new Transaction(demoTransactions[0]);
+	await transaction.save();
+	await transaction.deleteOne();
+
+	return transaction._id.toString();
+};
+
 const getAuthTokenAndUserId = async () => {
 	const passwordHash = await bcrypt.hash('secret', 10);
 	const user = new User({
@@ -76,9 +84,18 @@ const getAuthTokenAndUserId = async () => {
 	return { token, userId: user._id.toString() };
 };
 
+const createTestUser = async (name, email, password) => {
+	const passwordHash = await bcrypt.hash(password, 10);
+	const user = new User({ name, email, passwordHash });
+	await user.save();
+	return user._id.toString();
+};
+
 module.exports = {
 	usersInDb,
 	transactionsInDb,
 	demoTransactions,
 	getAuthTokenAndUserId,
+	createTestUser,
+	nonExisitingId,
 };

@@ -48,6 +48,37 @@ const transactionSchema = Joi.object({
 	}),
 });
 
+const updateTransactionSchema = Joi.object({
+	amount: Joi.number()
+		.optional()
+		.messages({ 'number.base': 'Amount must be a number' }),
+	type: Joi.string()
+		.valid('Income', 'Expense')
+		.optional()
+		.messages({ 'any.only': 'Type must be either "Income" or "Expense"' }),
+	category: Joi.string()
+		.optional()
+		.messages({ 'string.empty': 'Category cannot be empty' }),
+	description: Joi.string().allow('').max(250).optional().messages({
+		'string.max': 'Description cannot be longer than 250 characters',
+	}),
+	tags: Joi.array()
+		.items(Joi.string().min(1).max(30))
+		.max(10)
+		.optional()
+		.messages({
+			'array.max': 'You can add a maximum of 10 tags',
+		}),
+	date: Joi.date().optional().messages({
+		'date.base': 'Date must be a valid date format',
+	}),
+})
+	.min(1)
+	.messages({
+		'object.min': 'At least one field must be provided for update',
+	});
+
 module.exports = {
 	transactionSchema,
+	updateTransactionSchema,
 };

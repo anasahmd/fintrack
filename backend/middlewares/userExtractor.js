@@ -6,16 +6,10 @@ const logger = require('../utils/logger');
 const userExtractor = async (request, response, next) => {
 	const authorization = request.get('authorization');
 
-	console.log(authorization);
-
 	let token = null;
 	if (authorization && authorization.startsWith('Bearer ')) {
-		console.log('hello');
-
 		token = authorization.replace('Bearer ', '');
 	}
-
-	console.log(token);
 
 	if (!token) {
 		return response.status(401).json({ error: 'token missing or invalid' });
