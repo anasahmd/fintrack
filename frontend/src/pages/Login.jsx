@@ -22,8 +22,6 @@ const Login = ({ setUser }) => {
 	const handleLogin = async (event) => {
 		event.preventDefault();
 
-		console.log('click');
-
 		try {
 			const user = await loginService.login({
 				email,
