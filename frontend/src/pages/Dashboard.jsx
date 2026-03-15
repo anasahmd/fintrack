@@ -9,9 +9,13 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import RecentTransactions from '@/components/RecentTransactions';
+import TransactionChart from '@/components/TransactionChart';
 
 const Dashboard = ({ user, handleLogout }) => {
 	const [transactions, setTransactions] = useState([]);
+
+	const [viewMonth, setViewMonth] = useState(new Date().getMonth());
+	const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
 	// 1. Fetch the data
 	useEffect(() => {
@@ -69,22 +73,16 @@ const Dashboard = ({ user, handleLogout }) => {
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 				{/* LEFT SIDE (2/3 Width): The Table */}
 				<div className="lg:col-span-2">
-					<Card>
-						<CardHeader>
-							<CardTitle>Add Transaction</CardTitle>
-						</CardHeader>
-						<CardContent>
-							{/* Your input fields and submit button go here! */}
-							<div className="p-8 text-center text-zinc-500 border-2 border-dashed">
-								Form Placeholder
-							</div>
-						</CardContent>
-					</Card>
+					<TransactionChart transactions={transactions} />
 				</div>
 
 				{/* RIGHT SIDE (1/3 Width): The Form */}
 				<div className="lg:col-span-1">
-					<RecentTransactions transactions={transactions} />
+					<RecentTransactions
+						transactions={transactions}
+						month={viewMonth}
+						year={viewYear}
+					/>
 				</div>
 			</div>
 		</div>
