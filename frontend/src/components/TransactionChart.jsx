@@ -34,8 +34,16 @@ const TransactionChart = ({
 		);
 	}
 
+	const now = new Date();
+
+	const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+
 	const startOfMonth = new Date(year, month, 1);
-	const endOfMonth = new Date(year, month + 1, 0);
+
+	// Only generate the date till now if it's current month
+	const endOfMonth = isCurrentMonth
+		? new Date(now.getFullYear(), now.getMonth(), now.getDate())
+		: new Date(year, month + 1, 0);
 
 	const transactionsByDate = {};
 	transactions.forEach((t) => {
