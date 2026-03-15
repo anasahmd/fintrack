@@ -11,6 +11,7 @@ import {
 import transactionService from './services/transactions';
 import Dashboard from './pages/Dashboard';
 import { toast, Toaster } from 'sonner';
+import Layout from './components/Layout';
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -42,12 +43,14 @@ function App() {
 						path="/"
 						element={
 							user ? (
-								<Dashboard handleLogout={handleLogout} />
+								<Layout user={user} handleLogout={handleLogout} />
 							) : (
 								<Navigate to="/login" />
 							)
 						}
-					/>
+					>
+						<Route path="/" element={<Dashboard user={user} />} />
+					</Route>
 					<Route
 						path="/login"
 						element={
