@@ -27,7 +27,11 @@ const Dashboard = ({ user, handleLogout }) => {
 			{/* Top Header */}
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Dashboard</h1>
-				<Button variant="outline" onClick={handleLogout}>
+				<Button
+					variant="outline"
+					onClick={handleLogout}
+					className="cursor-pointer"
+				>
 					Log out
 				</Button>
 			</div>

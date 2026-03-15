@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import transactionService from './services/transactions';
 import Dashboard from './pages/Dashboard';
+import { toast, Toaster } from 'sonner';
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -23,21 +24,39 @@ function App() {
 		}
 	}, []);
 
+	const handleLogout = () => {
+		window.localStorage.removeItem('loggedInUser');
+
+		transactionService.setToken(null);
+
+		setUser(null);
+		toast.success("You've been logged out");
+	};
+
 	return (
-		<Router>
-			<Routes>
-				<Route
-					path="/"
-					element={user ? <Dashboard /> : <Navigate to="/login" />}
-				/>
-				<Route
-					path="/login"
-					element={
-						user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
-					}
-				/>
-			</Routes>
-		</Router>
+		<div>
+			<Toaster position="bottom-center" />
+			<Router>
+				<Routes>
+					<Route
+						path="/"
+						element={
+							user ? (
+								<Dashboard handleLogout={handleLogout} />
+							) : (
+								<Navigate to="/login" />
+							)
+						}
+					/>
+					<Route
+						path="/login"
+						element={
+							user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
+						}
+					/>
+				</Routes>
+			</Router>
+		</div>
 	);
 }
 

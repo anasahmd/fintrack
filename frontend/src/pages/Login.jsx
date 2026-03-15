@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import loginService from '@/services/login';
+import transactionService from '@/services/transactions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const Login = ({ setUser }) => {
 	const [email, setEmail] = useState('');
@@ -28,21 +23,21 @@ const Login = ({ setUser }) => {
 				password,
 			});
 
-			console.log(user);
-
 			window.localStorage.setItem('loggedInUser', JSON.stringify(user));
 
-			// transactionService.setToken(user.token);
+			transactionService.setToken(user.token);
 
 			setUser(user);
 			setEmail('');
 			setPassword('');
+			toast.success('Welcome back');
 
 			navigate();
 		} catch (exception) {
 			console.log(exception);
 
-			setErrorMessage('Wrong credentials');
+			toast.error('Wrong credentials');
+
 			setTimeout(() => {
 				setErrorMessage(null);
 			}, 5000);
@@ -50,44 +45,65 @@ const Login = ({ setUser }) => {
 	};
 
 	return (
-		<div className="flex h-screen items-center justify-center bg-zinc-50">
-			<Card className="w-87.5">
-				<CardHeader>
-					<CardTitle>Welcome back</CardTitle>
-					<CardDescription>Enter your credentials to login!</CardDescription>
-				</CardHeader>
-				<CardContent>
-					<form onSubmit={handleLogin} className="space-y-4">
-						{errorMessage && (
-							<p className="text-sm text-red-500 text-center">{errorMessage}</p>
-						)}
-
+		<div className="flex h-screen items-center justify-center bg-accent">
+			<section className="flex min-h-screen w-full items-center justify-center py-4 lg:py-20">
+				<div className="w-full max-w-sm space-y-6">
+					<h2 className="mt-6 text-3xl text-start font-semibold">
+						Sign in to your account
+					</h2>
+					<form onSubmit={handleLogin} className="space-y-6">
 						<div className="space-y-2">
-							<Label htmlFor="email">Email</Label>
+							<Label htmlFor="email">Email address</Label>
 							<Input
 								id="email"
-								type="text"
+								name="email"
+								type="email"
+								autoComplete="email"
+								required
+								className="mt-1"
 								value={email}
-								onChange={({ target }) => setEmail(target.value)}
+								onChange={({ target }) => {
+									setEmail(target.value);
+								}}
 							/>
 						</div>
-
 						<div className="space-y-2">
 							<Label htmlFor="password">Password</Label>
 							<Input
 								id="password"
+								name="password"
 								type="password"
+								autoComplete="current-password"
+								required
+								className="mt-1"
 								value={password}
-								onChange={({ target }) => setPassword(target.value)}
+								onChange={({ target }) => {
+									setPassword(target.value);
+								}}
 							/>
 						</div>
 
-						<Button type="submit" className="w-full">
-							Log in
-						</Button>
+						<div className="flex items-center justify-between">
+							<Link to="/forgot-password" className="text-sm hover:underline ">
+								Forgot your password?
+							</Link>
+						</div>
+
+						<div>
+							<Button type="submit" className="w-full cursor-pointer">
+								Signin
+							</Button>
+						</div>
 					</form>
-				</CardContent>
-			</Card>
+
+					<div className="space-y-6 lg:mt-10">
+						Don't have an account?{' '}
+						<Link to="/auth/register" className="underline">
+							Sign Up
+						</Link>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 };
