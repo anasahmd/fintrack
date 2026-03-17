@@ -2,6 +2,7 @@ const Transaction = require('../models/transaction');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const { default: mongoose } = require('mongoose');
 
 const demoTransactions = [
 	{
@@ -57,11 +58,8 @@ const transactionsInDb = async () => {
 };
 
 const nonExisitingId = async () => {
-	const transaction = new Transaction(demoTransactions[0]);
-	await transaction.save();
-	await transaction.deleteOne();
-
-	return transaction._id.toString();
+	const fakeId = new mongoose.Types.ObjectId();
+	return fakeId.toString();
 };
 
 const getAuthTokenAndUserId = async () => {

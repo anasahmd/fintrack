@@ -7,7 +7,7 @@ const Layout = ({ user, handleLogout }) => {
 			<header className="bg-white border-b border-zinc-200 sticky top-0 z-10">
 				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 					<div className="flex items-center gap-8">
-						<div className="text-xl font-bold text-primary">FinTrack</div>
+						<div className="text-xl font-bold text-primary">Fintrack</div>
 
 						{/* <nav className="hidden md:flex gap-6 text-sm font-medium text-zinc-500">
 							<div className="text-zinc-900 cursor-pointer">Dashboard</div>

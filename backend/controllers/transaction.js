@@ -7,15 +7,20 @@ const {
 } = require('../validations/transaction');
 
 const getAllTransaction = async (request, response, next) => {
-	const transactions = await Transaction.find({ user: request.user._id });
+	const transactions = await Transaction.find({ user: request.user._id })
+		.populate('category', 'name emoji')
+		.sort({ date: -1 });
 	return response.status(200).json(transactions);
 };
 
 const getTransaction = async (request, response, next) => {
-	const transaction = await Transaction.findById(request.params.id);
+	const transaction = await Transaction.findById(request.params.id).populate(
+		'category',
+		'name emoji',
+	);
 
 	if (!transaction) {
-		response.status(404).json({ error: 'Transaction not found' });
+		return response.status(404).json({ error: 'Transaction not found' });
 	}
 
 	if (request.user.id.toString() !== transaction.user.toString()) {
@@ -37,6 +42,7 @@ const postTransaction = async (request, response, next) => {
 	});
 
 	const savedTransaction = await newTransaction.save();
+	await savedTransaction.populate('category', 'name emoji');
 
 	return response.status(201).json(savedTransaction);
 };
@@ -61,8 +67,8 @@ const updateTransaction = async (request, response, next) => {
 	const updatedTransaction = await Transaction.findByIdAndUpdate(
 		transaction._id,
 		request.body,
-		{ new: true, runValidators: true, context: 'query' }
-	);
+		{ new: true, runValidators: true, context: 'query' },
+	).populate('category', 'name emoji');
 
 	return response.status(200).json(updatedTransaction);
 };

@@ -6,25 +6,39 @@ const app = require('../app');
 const Transaction = require('../models/transaction');
 const helper = require('./test_helper');
 const User = require('../models/user');
+const Category = require('../models/category');
 
 const api = supertest(app);
 
 describe('actions requiring authentication', () => {
 	let token;
 	let userId;
+	let testCategoryId;
 
 	beforeEach(async () => {
 		await User.deleteMany({});
 		await Transaction.deleteMany({});
+		await Category.deleteMany({});
 
 		const authData = await helper.getAuthTokenAndUserId();
 
 		token = authData.token;
 		userId = authData.userId;
 
+		const testCategory = new Category({
+			user: userId,
+			name: 'Food',
+			type: 'Expense',
+			emoji: '🍔',
+		});
+
+		const savedCategory = await testCategory.save();
+		testCategoryId = savedCategory.id;
+
 		const transactionWithUser = helper.demoTransactions.map((transaction) => ({
 			...transaction,
 			user: userId,
+			category: testCategoryId,
 		}));
 
 		await Transaction.insertMany(transactionWithUser);
@@ -35,7 +49,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -52,7 +66,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length + 1
+				helper.demoTransactions.length + 1,
 			);
 
 			const descriptions = await transactionAfterPost.map((t) => t.description);
@@ -63,7 +77,7 @@ describe('actions requiring authentication', () => {
 			const minimalTransaction = {
 				amount: 50,
 				type: 'Expense',
-				category: 'Snacks',
+				category: testCategoryId,
 			};
 
 			const response = await api
@@ -80,7 +94,7 @@ describe('actions requiring authentication', () => {
 			const transactionsAtEnd = await helper.transactionsInDb();
 			assert.strictEqual(
 				transactionsAtEnd.length,
-				helper.demoTransactions.length + 1
+				helper.demoTransactions.length + 1,
 			);
 		});
 
@@ -88,7 +102,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -100,14 +114,14 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 		});
 
 		test('post request fails if amount is not given', async () => {
 			const newTransaction = {
 				type: 'Expense',
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -123,7 +137,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Amount is required');
@@ -133,7 +147,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 'ten',
 				type: 'Expense',
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -149,7 +163,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Amount must be a number');
@@ -158,7 +172,7 @@ describe('actions requiring authentication', () => {
 		test('post request fails if type is not given', async () => {
 			const newTransaction = {
 				amount: 10,
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -174,7 +188,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Type is required');
@@ -184,7 +198,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Incorrect',
-				category: 'Food',
+				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -200,12 +214,12 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(
 				response.body.error,
-				'Type must be either "Income" or "Expense"'
+				'Type must be either "Income" or "Expense"',
 			);
 		});
 
@@ -228,7 +242,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Category is required');
@@ -254,7 +268,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Category cannot be empty');
@@ -266,7 +280,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: longDescription,
-				category: 'Food',
+				category: testCategoryId,
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
 			};
@@ -281,12 +295,12 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(
 				response.body.error,
-				'Description cannot be longer than 250 characters'
+				'Description cannot be longer than 250 characters',
 			);
 		});
 
@@ -295,7 +309,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: 'Chai',
-				category: 'Food',
+				category: testCategoryId,
 				tags: ['', 'chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
 			};
@@ -310,7 +324,7 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(response.body.error, 'Tags cannot be empty');
@@ -322,7 +336,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: 'Chai',
-				category: 'Food',
+				category: testCategoryId,
 				tags: [longTag, 'chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
 			};
@@ -337,12 +351,12 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(
 				response.body.error,
-				'Each tag cannot be longer than 30 characters'
+				'Each tag cannot be longer than 30 characters',
 			);
 		});
 
@@ -352,7 +366,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: 'Chai',
-				category: 'Food',
+				category: testCategoryId,
 				tags: longTagsArray,
 				date: new Date('2025-10-01T10:00:00Z'),
 			};
@@ -367,12 +381,12 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(
 				response.body.error,
-				'You can add a maximum of 10 tags'
+				'You can add a maximum of 10 tags',
 			);
 		});
 
@@ -381,7 +395,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: 'Chai',
-				category: 'Food',
+				category: testCategoryId,
 				tags: ['chai'],
 				date: 'fake date',
 			};
@@ -396,12 +410,12 @@ describe('actions requiring authentication', () => {
 
 			assert.strictEqual(
 				transactionAfterPost.length,
-				helper.demoTransactions.length
+				helper.demoTransactions.length,
 			);
 
 			assert.strictEqual(
 				response.body.error,
-				'Date must be a valid date format'
+				'Date must be a valid date format',
 			);
 		});
 	});
@@ -409,18 +423,26 @@ describe('actions requiring authentication', () => {
 	describe('when multiple user exists', () => {
 		let userIdB;
 		let transactionOfUserB;
+		let categoryOfUserB;
 
 		beforeEach(async () => {
 			userIdB = await helper.createTestUser(
 				'User B',
 				'userb@example.com',
-				'passwordB'
+				'passwordB',
 			);
+
+			const testCategoryB = new Category({
+				user: userIdB,
+				name: 'Other',
+				type: 'Expense',
+			});
+			categoryOfUserB = await testCategoryB.save();
 
 			transactionOfUserB = new Transaction({
 				amount: 999,
 				type: 'Expense',
-				category: 'Other',
+				category: categoryOfUserB.id,
 				user: userIdB,
 			});
 			await transactionOfUserB.save();
@@ -436,11 +458,11 @@ describe('actions requiring authentication', () => {
 
 				assert.strictEqual(
 					response.body.length,
-					helper.demoTransactions.length
+					helper.demoTransactions.length,
 				);
 
 				response.body.forEach((t) =>
-					assert.strictEqual(t.user.toString(), userId)
+					assert.strictEqual(t.user.toString(), userId),
 				);
 			});
 
@@ -455,7 +477,7 @@ describe('actions requiring authentication', () => {
 			beforeEach(async () => {
 				const transactions = await helper.transactionsInDb();
 				transactionTofind = transactions.find(
-					(t) => t.user.toString() === userId
+					(t) => t.user.toString() === userId,
 				);
 				if (!transactionTofind) {
 					throw new Error('Could not find User transaction to update');
@@ -507,7 +529,7 @@ describe('actions requiring authentication', () => {
 			beforeEach(async () => {
 				const transactions = await helper.transactionsInDb();
 				transactionToUpdate = transactions.find(
-					(t) => t.user.toString() === userId
+					(t) => t.user.toString() === userId,
 				);
 				if (!transactionToUpdate) {
 					throw new Error('Could not find User transaction to update');
@@ -533,12 +555,12 @@ describe('actions requiring authentication', () => {
 				assert.deepStrictEqual(response.body.tags, updateData.tags);
 
 				const updatedTransaction = await Transaction.findById(
-					transactionToUpdate.id
+					transactionToUpdate.id,
 				);
 				assert.strictEqual(updatedTransaction.amount, updateData.amount);
 				assert.strictEqual(
 					updatedTransaction.description,
-					updateData.description
+					updateData.description,
 				);
 				assert.deepStrictEqual(updatedTransaction.tags, updateData.tags);
 			});
@@ -552,7 +574,7 @@ describe('actions requiring authentication', () => {
 
 				assert.strictEqual(
 					response.body.error,
-					'At least one field must be provided for update'
+					'At least one field must be provided for update',
 				);
 			});
 
@@ -578,7 +600,7 @@ describe('actions requiring authentication', () => {
 					.expect(403);
 
 				const transactionAfterUpdate = await Transaction.findById(
-					transactionOfUserB._id
+					transactionOfUserB._id,
 				);
 
 				assert.strictEqual(initialAmount, transactionAfterUpdate.amount);
@@ -622,12 +644,12 @@ describe('actions requiring authentication', () => {
 				const transactionsAtStart = await helper.transactionsInDb();
 
 				const transactionToDelete = transactionsAtStart.find(
-					(t) => t.user.toString() === userId
+					(t) => t.user.toString() === userId,
 				);
 
 				if (!transactionToDelete) {
 					throw new Error(
-						'Could not find a transaction belonging to the primary test user in the initial data'
+						'Could not find a transaction belonging to the primary test user in the initial data',
 					);
 				}
 
@@ -640,7 +662,7 @@ describe('actions requiring authentication', () => {
 
 				assert.strictEqual(
 					transactionsAtStart.length - 1,
-					transactionsAtEnd.length
+					transactionsAtEnd.length,
 				);
 				const ids = transactionsAtEnd.map((n) => n.id);
 
@@ -650,7 +672,7 @@ describe('actions requiring authentication', () => {
 			test('fails with 401 if no token is provided', async () => {
 				const transactionsAtStart = await helper.transactionsInDb();
 				const transactionToDelete = transactionsAtStart.find(
-					(t) => t.user.toString() === userId
+					(t) => t.user.toString() === userId,
 				);
 
 				await api

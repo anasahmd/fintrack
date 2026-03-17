@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import RecentTransactions from '@/components/RecentTransactions';
 import TransactionChart from '@/components/TransactionChart';
+import TransactionForm from '@/components/TransactionForm';
 
 const Dashboard = ({ user, handleLogout }) => {
 	const [transactions, setTransactions] = useState([]);
@@ -38,9 +39,7 @@ const Dashboard = ({ user, handleLogout }) => {
 			{/* Top Header */}
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
-				<Button variant="outline" onClick={() => {}} className="cursor-pointer">
-					Add Transaction
-				</Button>
+				<TransactionForm />
 			</div>
 
 			{/* Summary Cards (3 Columns on Desktop, 1 on Mobile) */}

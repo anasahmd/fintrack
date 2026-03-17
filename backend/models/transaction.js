@@ -21,8 +21,8 @@ const transactionSchema = mongoose.Schema(
 			required: [true, 'Type is required'],
 		},
 		category: {
-			type: String,
-			trim: true,
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Category',
 			required: [true, 'Category is required'],
 		},
 		tags: {
@@ -35,7 +35,7 @@ const transactionSchema = mongoose.Schema(
 			default: Date.now(),
 		},
 	},
-	{ timestamps: true }
+	{ timestamps: true },
 );
 
 transactionSchema.set('toJSON', {

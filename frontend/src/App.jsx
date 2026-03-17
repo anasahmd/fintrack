@@ -51,6 +51,7 @@ function App() {
 					>
 						<Route path="/" element={<Dashboard user={user} />} />
 					</Route>
+
 					<Route
 						path="/login"
 						element={
