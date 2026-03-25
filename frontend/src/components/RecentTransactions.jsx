@@ -19,14 +19,14 @@ const RecentTransactions = ({ transactions }) => {
 			<CardContent>
 				<div className="space-y-8">
 					{transactions.map((transaction, index) => (
-						<div>
-							<div key={transaction.id} className="flex items-center pb-2">
+						<div key={transaction.id}>
+							<div className="flex items-center pb-2">
 								<div className="text-start">
 									<p className="text-sm leading-none font-medium pb-2">
 										{transaction.description}
 									</p>
 									<p className="text-muted-foreground text-sm">
-										{transaction.category}
+										{`${transaction.category.emoji} ${transaction.category.name}`}
 									</p>
 								</div>
 								<div className="ml-auto font-medium">

@@ -1,37 +1,59 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/user');
+const Category = require('../models/category');
 const config = require('../utils/config');
 const jwt = require('jsonwebtoken');
 const { registerSchema, loginSchema } = require('../validations/auth');
+
+const DEFAULT_CATEGORIES = [
+	// Income
+	{ name: 'Salary', type: 'Income', emoji: '💰' },
+	{ name: 'Freelance', type: 'Income', emoji: '💻' },
+	{ name: 'Investments', type: 'Income', emoji: '📈' },
+
+	// Expenses
+	{ name: 'Housing', type: 'Expense', emoji: '🏠' },
+	{ name: 'Food', type: 'Expense', emoji: '🍔' },
+	{ name: 'Transportation', type: 'Expense', emoji: '🚗' },
+	{ name: 'Utilities', type: 'Expense', emoji: '⚡' },
+	{ name: 'Health', type: 'Expense', emoji: '🏥' },
+	{ name: 'Other', type: 'Expense', emoji: '🛍️' },
+];
 
 const register = async (request, response, next) => {
 	const { name, email, password } = request.body;
 
 	try {
-		await registerSchema.validateAsync({ name, email, password });
-	} catch (e) {
-		return response.status(400).json({ error: e.details[0].message });
-	}
+		try {
+			await registerSchema.validateAsync({ name, email, password });
+		} catch (e) {
+			return response.status(400).json({ error: e.details[0].message });
+		}
 
-	const existingUser = await User.findOne({ email });
+		const existingUser = await User.findOne({ email });
 
-	if (existingUser) {
-		return response
-			.status(400)
-			.json({ error: 'An account with this email already exists' });
-	}
+		if (existingUser) {
+			return response
+				.status(400)
+				.json({ error: 'An account with this email already exists' });
+		}
 
-	const saltRounds = 10;
-	const passwordHash = await bcrypt.hash(password, saltRounds);
+		const saltRounds = 10;
+		const passwordHash = await bcrypt.hash(password, saltRounds);
 
-	const newUser = new User({
-		name,
-		email,
-		passwordHash,
-	});
+		const newUser = new User({
+			name,
+			email,
+			passwordHash,
+		});
 
-	try {
 		const savedUser = await newUser.save();
+		const categoriesToInsert = DEFAULT_CATEGORIES.map((cat) => ({
+			...cat,
+			user: savedUser._id,
+		}));
+
+		await Category.insertMany(categoriesToInsert);
 		response.status(201).json({
 			id: savedUser._id,
 			name: savedUser.name,

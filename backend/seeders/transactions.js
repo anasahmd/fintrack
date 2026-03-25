@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Transaction = require('../models/transaction');
 const User = require('../models/user');
+const Category = require('../models/category');
 const { MONGODB_URI } = require('../utils/config');
 
 const seedDatabase = async () => {
@@ -9,11 +10,10 @@ const seedDatabase = async () => {
 		await mongoose.connect(MONGODB_URI);
 		console.log('Connected to MongoDB for seeding...');
 
-		// Clear existing transactions to prevent duplicates
 		await Transaction.deleteMany({});
-		console.log('Cleared existing transactions.');
+		await Category.deleteMany({});
+		console.log('Cleared existing transactions and categories.');
 
-		// Ensure a default user exists for the relational mapping
 		let defaultUser = await User.findOne({ email: 'demo@example.com' });
 
 		if (!defaultUser) {
@@ -28,14 +28,29 @@ const seedDatabase = async () => {
 			console.log('Created default demo user.');
 		}
 
-		// Define the data strictly matching your schema
+		const categoriesData = [
+			{ name: 'Salary', type: 'Income', emoji: '💰', user: defaultUser._id },
+			{ name: 'Freelance', type: 'Income', emoji: '💻', user: defaultUser._id },
+			{ name: 'Housing', type: 'Expense', emoji: '🏠', user: defaultUser._id },
+			{ name: 'Food', type: 'Expense', emoji: '🍔', user: defaultUser._id },
+			{ name: 'Health', type: 'Expense', emoji: '🏥', user: defaultUser._id },
+		];
+
+		const savedCategories = await Category.insertMany(categoriesData);
+		console.log('Seeded relational categories.');
+
+		const getCategoryId = (name) => {
+			const category = savedCategories.find((cat) => cat.name === name);
+			return category._id;
+		};
+
 		const dummyTransactions = [
 			{
 				user: defaultUser._id,
 				description: 'Monthly Salary',
 				amount: 85000,
 				type: 'Income',
-				category: 'Salary',
+				category: getCategoryId('Salary'),
 				tags: ['job', 'monthly'],
 				date: new Date('2026-03-01'),
 			},
@@ -44,7 +59,7 @@ const seedDatabase = async () => {
 				description: 'Apartment Rent',
 				amount: 25000,
 				type: 'Expense',
-				category: 'Housing',
+				category: getCategoryId('Housing'),
 				tags: ['rent', 'essential'],
 				date: new Date('2026-03-02'),
 			},
@@ -53,7 +68,7 @@ const seedDatabase = async () => {
 				description: 'Groceries',
 				amount: 4500,
 				type: 'Expense',
-				category: 'Food',
+				category: getCategoryId('Food'),
 				tags: ['supermarket'],
 				date: new Date('2026-03-05'),
 			},
@@ -62,7 +77,7 @@ const seedDatabase = async () => {
 				description: 'Freelance Project',
 				amount: 15000,
 				type: 'Income',
-				category: 'Freelance',
+				category: getCategoryId('Freelance'),
 				tags: ['webdev'],
 				date: new Date('2026-03-10'),
 			},
@@ -71,13 +86,12 @@ const seedDatabase = async () => {
 				description: 'Gym Membership',
 				amount: 1500,
 				type: 'Expense',
-				category: 'Health',
+				category: getCategoryId('Health'),
 				tags: ['subscription'],
 				date: new Date('2026-03-14'),
 			},
 		];
 
-		// Bulk insert
 		await Transaction.insertMany(dummyTransactions);
 		console.log('Successfully seeded database with structured transactions!');
 
