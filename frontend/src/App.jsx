@@ -8,10 +8,10 @@ import {
 	Link,
 	Navigate,
 } from 'react-router-dom';
-import transactionService from './services/transactions';
 import Dashboard from './pages/Dashboard';
 import { toast, Toaster } from 'sonner';
 import Layout from './components/Layout';
+import { setGlobalToken } from './services/api';
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -21,14 +21,14 @@ function App() {
 		if (loggedUserJSON) {
 			const parsedUser = JSON.parse(loggedUserJSON);
 			setUser(parsedUser);
-			transactionService.setToken(parsedUser.token);
+			setGlobalToken(parsedUser.token);
 		}
 	}, []);
 
 	const handleLogout = () => {
 		window.localStorage.removeItem('loggedInUser');
 
-		transactionService.setToken(null);
+		setGlobalToken(null);
 
 		setUser(null);
 		toast.success("You've been logged out");

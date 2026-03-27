@@ -30,14 +30,14 @@ const TransactionSheet = () => {
 
 				<Tabs defaultValue="overview">
 					<TabsList variant="line">
-						<TabsTrigger value="income">Income</TabsTrigger>
-						<TabsTrigger value="expense">Expense</TabsTrigger>
+						<TabsTrigger value="Expense">Expense</TabsTrigger>
+						<TabsTrigger value="Income">Income</TabsTrigger>
 					</TabsList>
-					<TabsContent value="income">
-						<TransactionForm type="income" />
+					<TabsContent value="Expense">
+						<TransactionForm type="Expense" />
 					</TabsContent>
-					<TabsContent value="expense">
-						<TransactionForm type="expense" />
+					<TabsContent value="Income">
+						<TransactionForm type="Income" />
 					</TabsContent>
 				</Tabs>
 			</SheetContent>

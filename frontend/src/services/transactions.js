@@ -1,20 +1,15 @@
-import axios from 'axios';
+import { api } from './api';
 
-const baseUrl = '/api/transactions';
-
-let token = null;
-
-const setToken = (newToken) => {
-	token = `Bearer ${newToken}`;
-};
+const endpoint = '/transactions';
 
 const getAll = async () => {
-	const config = {
-		headers: { Authorization: token },
-	};
-
-	const response = await axios.get(baseUrl, config);
+	const response = await api.get(endpoint);
 	return response.data;
 };
 
-export default { getAll, setToken };
+const create = async (payload) => {
+	const response = await api.post(endpoint, payload);
+	return response.data;
+};
+
+export default { create, getAll };

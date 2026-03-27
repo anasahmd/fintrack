@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { setGlobalToken } from '@/services/api';
 
 const Login = ({ setUser }) => {
 	const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const Login = ({ setUser }) => {
 
 			window.localStorage.setItem('loggedInUser', JSON.stringify(user));
 
-			transactionService.setToken(user.token);
+			setGlobalToken(user.token);
 
 			setUser(user);
 			setEmail('');
