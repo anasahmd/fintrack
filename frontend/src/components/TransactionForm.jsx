@@ -17,14 +17,21 @@ import { ChevronDownIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
 import transactionService from '@/services/transactions';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories } from '@/store/categorySlice';
+import { addTransaction } from '@/store/transactionSlice';
 
-const TransactionForm = ({ type }) => {
-	const [categories, setCategories] = useState([]);
+const TransactionForm = ({ type, setSheetOpen }) => {
+	const dispatch = useDispatch();
+	const { items: categories } = useSelector((state) => state.categories);
+
 	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
-		categoryService.getAll().then((data) => setCategories(data));
-	}, []);
+		if (categories.length === 0) {
+			dispatch(fetchCategories());
+		}
+	}, [categories.length, dispatch]);
 
 	const [formData, setFormData] = useState({
 		amount: 0,
@@ -63,13 +70,15 @@ const TransactionForm = ({ type }) => {
 		delete apiPayload.time;
 
 		try {
-			const savedTransaction = await transactionService.create(apiPayload);
-			console.log('Successfully saved:', savedTransaction);
+			await dispatch(addTransaction(apiPayload)).unwrap();
+
+			console.log('Transaction saved!');
+			if (setSheetOpen) {
+				setSheetOpen(false);
+			}
 		} catch (error) {
 			console.error('Failed to save transaction:', error);
 		}
-
-		console.log(apiPayload);
 	};
 
 	const filteredCategories = categories.filter((cat) => cat.type === type);
@@ -159,7 +168,6 @@ const TransactionForm = ({ type }) => {
 							name="time"
 							value={formData.time}
 							onChange={handleChange}
-							defaultValue="10:30"
 							className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
 						/>
 					</Field>

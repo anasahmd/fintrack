@@ -13,10 +13,13 @@ import {
 import { Button } from '@/components/ui/button';
 
 import TransactionForm from './TransactionForm';
+import { useState } from 'react';
 
 const TransactionSheet = () => {
+	const [isSheetOpen, setIsSheetOpen] = useState(false);
+
 	return (
-		<Sheet>
+		<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
 			<SheetTrigger asChild>
 				<Button variant="outline" className="cursor-pointer">
 					Add Transaction
@@ -34,10 +37,10 @@ const TransactionSheet = () => {
 						<TabsTrigger value="Income">Income</TabsTrigger>
 					</TabsList>
 					<TabsContent value="Expense">
-						<TransactionForm type="Expense" />
+						<TransactionForm type="Expense" setSheetOpen={setIsSheetOpen} />
 					</TabsContent>
 					<TabsContent value="Income">
-						<TransactionForm type="Income" />
+						<TransactionForm type="Income" setSheetOpen={setIsSheetOpen} />
 					</TabsContent>
 				</Tabs>
 			</SheetContent>

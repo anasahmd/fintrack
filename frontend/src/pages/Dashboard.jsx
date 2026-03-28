@@ -11,19 +11,21 @@ import {
 import RecentTransactions from '@/components/RecentTransactions';
 import TransactionChart from '@/components/TransactionChart';
 import TransactionSheet from '@/components/TransactionSheet';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchTransactions } from '@/store/transactionSlice';
 
 const Dashboard = ({ user, handleLogout }) => {
-	const [transactions, setTransactions] = useState([]);
+	const dispatch = useDispatch();
 
 	const [viewMonth, setViewMonth] = useState(new Date().getMonth());
 	const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
-	// 1. Fetch the data
-	useEffect(() => {
-		transactionService.getAll().then((data) => setTransactions(data));
-	}, []);
+	const { items: transactions } = useSelector((state) => state.transactions);
 
-	// 2. Derive the totals instantly
+	useEffect(() => {
+		dispatch(fetchTransactions());
+	}, [dispatch]);
+
 	const income = transactions
 		.filter((t) => t.type === 'Income')
 		.reduce((acc, t) => acc + t.amount, 0);
@@ -36,13 +38,11 @@ const Dashboard = ({ user, handleLogout }) => {
 
 	return (
 		<div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
-			{/* Top Header */}
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
 				<TransactionSheet />
 			</div>
 
-			{/* Summary Cards (3 Columns on Desktop, 1 on Mobile) */}
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 				<Card>
 					<CardHeader>
@@ -68,14 +68,11 @@ const Dashboard = ({ user, handleLogout }) => {
 				</Card>
 			</div>
 
-			{/* Main Layout Grid */}
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-				{/* LEFT SIDE (2/3 Width): The Table */}
 				<div className="lg:col-span-2">
 					<TransactionChart transactions={transactions} />
 				</div>
 
-				{/* RIGHT SIDE (1/3 Width): The Form */}
 				<div className="lg:col-span-1">
 					<RecentTransactions
 						transactions={transactions}
