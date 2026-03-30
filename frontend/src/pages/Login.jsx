@@ -1,40 +1,39 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { loginUser } from '@/store/authSlice';
 import { useDispatch } from 'react-redux';
+import { loginSchema } from '@/validations/auth';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const Login = () => {
 	const dispatch = useDispatch();
-	const [email, setEmail] = useState('');
-	const [password, setPassword] = useState('');
-
 	const navigate = useNavigate();
 
-	const handleLogin = async (event) => {
-		event.preventDefault();
+	const form = useForm({
+		resolver: zodResolver(loginSchema),
+		defaultValues: {
+			email: '',
+			password: '',
+		},
+	});
 
+	const onSubmit = async (data) => {
 		try {
-			const user = dispatch(
+			const user = await dispatch(
 				loginUser({
-					email,
-					password,
+					email: data.email,
+					password: data.password,
 				}),
-			);
-
-			// reset the state of form
-			setEmail('');
-			setPassword('');
+			).unwrap();
 
 			toast.success('Welcome back');
-			navigate();
+			navigate('/');
 		} catch (exception) {
-			console.log(exception);
-
-			toast.error('Wrong credentials');
+			toast.error(exception);
 		}
 	};
 
@@ -45,37 +44,56 @@ const Login = () => {
 					<h2 className="mt-6 text-3xl text-start font-semibold">
 						Sign in to your account
 					</h2>
-					<form onSubmit={handleLogin} className="space-y-6">
-						<div className="space-y-2">
-							<Label htmlFor="email">Email address</Label>
-							<Input
-								id="email"
-								name="email"
-								type="email"
-								autoComplete="email"
-								required
-								className="mt-1"
-								value={email}
-								onChange={({ target }) => {
-									setEmail(target.value);
-								}}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label htmlFor="password">Password</Label>
-							<Input
-								id="password"
-								name="password"
-								type="password"
-								autoComplete="current-password"
-								required
-								className="mt-1"
-								value={password}
-								onChange={({ target }) => {
-									setPassword(target.value);
-								}}
-							/>
-						</div>
+					<form
+						onSubmit={form.handleSubmit(onSubmit)}
+						className="space-y-6"
+						noValidate
+					>
+						<Controller
+							name="email"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Field data-invalid={fieldState.invalid}>
+									<FieldLabel htmlFor={field.name}>Email address</FieldLabel>
+									<Input
+										{...field}
+										id={field.name}
+										type="email"
+										aria-invalid={fieldState.invalid}
+										placeholder="name@example.com"
+										autoComplete="email"
+									/>
+									{fieldState.invalid && (
+										<FieldError
+											className="text-start"
+											errors={[fieldState.error]}
+										/>
+									)}
+								</Field>
+							)}
+						/>
+						<Controller
+							name="password"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Field data-invalid={fieldState.invalid}>
+									<FieldLabel htmlFor={field.name}>Password</FieldLabel>
+									<Input
+										{...field}
+										id={field.name}
+										type="password"
+										aria-invalid={fieldState.invalid}
+										autoComplete="current-password"
+									/>
+									{fieldState.invalid && (
+										<FieldError
+											className="text-start"
+											errors={[fieldState.error]}
+										/>
+									)}
+								</Field>
+							)}
+						/>
 
 						<div className="flex items-center justify-between">
 							<Link to="/forgot-password" className="text-sm hover:underline ">

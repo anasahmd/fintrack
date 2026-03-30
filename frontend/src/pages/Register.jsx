@@ -5,15 +5,9 @@ import { toast } from 'sonner';
 import { registerUser } from '@/store/authSlice';
 import { useDispatch } from 'react-redux';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { Controller, useForm } from 'react-hook-form';
 import { registerSchema } from '@/validations/auth';
-import {
-	Field,
-	FieldError,
-	FieldGroup,
-	FieldLabel,
-} from '@/components/ui/field';
+import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 
 const Register = () => {
 	const dispatch = useDispatch();

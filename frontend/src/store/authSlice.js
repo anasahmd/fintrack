@@ -8,9 +8,20 @@ if (savedUser && savedUser.token) {
 	setGlobalToken(savedUser.token);
 }
 
-export const loginUser = createAsyncThunk('auth/login', async (credentials) => {
-	return await authService.login(credentials);
-});
+export const loginUser = createAsyncThunk(
+	'auth/login',
+	async (credentials, { rejectWithValue }) => {
+		try {
+			return await authService.login(credentials);
+		} catch (error) {
+			const errorMessage =
+				error.response?.data?.message ||
+				error.response?.data?.error ||
+				'Login failed. Please check your credentials and try again.';
+			return rejectWithValue(errorMessage);
+		}
+	},
+);
 
 export const registerUser = createAsyncThunk(
 	'auth/register',
