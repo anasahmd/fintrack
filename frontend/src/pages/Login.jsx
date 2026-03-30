@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import loginService from '@/services/login';
-import transactionService from '@/services/transactions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-import { setGlobalToken } from '@/services/api';
+import { loginUser } from '@/store/authSlice';
+import { useDispatch } from 'react-redux';
 
-const Login = ({ setUser }) => {
+const Login = () => {
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [errorMessage, setErrorMessage] = useState(null);
 
 	const navigate = useNavigate();
 
@@ -19,29 +18,23 @@ const Login = ({ setUser }) => {
 		event.preventDefault();
 
 		try {
-			const user = await loginService.login({
-				email,
-				password,
-			});
+			const user = dispatch(
+				loginUser({
+					email,
+					password,
+				}),
+			);
 
-			window.localStorage.setItem('loggedInUser', JSON.stringify(user));
-
-			setGlobalToken(user.token);
-
-			setUser(user);
+			// reset the state of form
 			setEmail('');
 			setPassword('');
-			toast.success('Welcome back');
 
+			toast.success('Welcome back');
 			navigate();
 		} catch (exception) {
 			console.log(exception);
 
 			toast.error('Wrong credentials');
-
-			setTimeout(() => {
-				setErrorMessage(null);
-			}, 5000);
 		}
 	};
 
@@ -99,7 +92,7 @@ const Login = ({ setUser }) => {
 
 					<div className="space-y-6 lg:mt-10">
 						Don't have an account?{' '}
-						<Link to="/auth/register" className="underline">
+						<Link to="/register" className="underline">
 							Sign Up
 						</Link>
 					</div>

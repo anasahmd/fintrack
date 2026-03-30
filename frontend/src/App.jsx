@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import './App.css';
 import Login from './pages/Login';
 import {
@@ -9,30 +8,13 @@ import {
 	Navigate,
 } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
-import { toast, Toaster } from 'sonner';
+import { Toaster } from 'sonner';
 import Layout from './components/Layout';
-import { setGlobalToken } from './services/api';
+import { useSelector } from 'react-redux';
+import Register from './pages/Register';
 
 function App() {
-	const [user, setUser] = useState(null);
-
-	useEffect(() => {
-		const loggedUserJSON = window.localStorage.getItem('loggedInUser');
-		if (loggedUserJSON) {
-			const parsedUser = JSON.parse(loggedUserJSON);
-			setUser(parsedUser);
-			setGlobalToken(parsedUser.token);
-		}
-	}, []);
-
-	const handleLogout = () => {
-		window.localStorage.removeItem('loggedInUser');
-
-		setGlobalToken(null);
-
-		setUser(null);
-		toast.success("You've been logged out");
-	};
+	const { user } = useSelector((state) => state.auth);
 
 	return (
 		<div>
@@ -41,22 +23,19 @@ function App() {
 				<Routes>
 					<Route
 						path="/"
-						element={
-							user ? (
-								<Layout user={user} handleLogout={handleLogout} />
-							) : (
-								<Navigate to="/login" />
-							)
-						}
+						element={user ? <Layout /> : <Navigate to="/login" />}
 					>
-						<Route path="/" element={<Dashboard user={user} />} />
+						<Route path="/" element={<Dashboard />} />
 					</Route>
 
 					<Route
 						path="/login"
-						element={
-							user ? <Navigate to="/" replace /> : <Login setUser={setUser} />
-						}
+						element={user ? <Navigate to="/" replace /> : <Login />}
+					/>
+
+					<Route
+						path="/register"
+						element={user ? <Navigate to="/" replace /> : <Register />}
 					/>
 				</Routes>
 			</Router>

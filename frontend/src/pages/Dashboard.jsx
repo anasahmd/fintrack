@@ -1,6 +1,4 @@
 import { useState, useEffect } from 'react';
-import transactionService from '@/services/transactions';
-import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
@@ -14,8 +12,10 @@ import TransactionSheet from '@/components/TransactionSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
 
-const Dashboard = ({ user, handleLogout }) => {
+const Dashboard = () => {
 	const dispatch = useDispatch();
+
+	const { user } = useSelector((state) => state.auth);
 
 	const [viewMonth, setViewMonth] = useState(new Date().getMonth());
 	const [viewYear, setViewYear] = useState(new Date().getFullYear());

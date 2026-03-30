@@ -1,7 +1,16 @@
 import { Outlet } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '@/store/authSlice';
 
-const Layout = ({ user, handleLogout }) => {
+const Layout = () => {
+	const dispatch = useDispatch();
+	const { user } = useSelector((state) => state.auth);
+
+	const handleLogout = () => {
+		dispatch(logout());
+	};
+
 	return (
 		<div className="min-h-screen bg-zinc-50 flex flex-col">
 			<header className="bg-white border-b border-zinc-200 sticky top-0 z-10">
