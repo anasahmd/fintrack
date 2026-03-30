@@ -6,6 +6,7 @@ import {
 	CardDescription,
 } from '@/components/ui/card';
 import { Separator } from './ui/separator';
+import { format } from 'date-fns';
 
 const RecentTransactions = ({ transactions }) => {
 	return (
@@ -19,25 +20,28 @@ const RecentTransactions = ({ transactions }) => {
 			<CardContent>
 				<div className="space-y-8">
 					{transactions.map((transaction, index) => (
-						<div key={transaction.id}>
-							<div className="flex items-center pb-2">
-								<div className="text-start">
-									<p className="text-sm leading-none font-medium pb-2">
-										{transaction.description}
-									</p>
-									<p className="text-muted-foreground text-sm">
-										{`${transaction.category.emoji} ${transaction.category.name}`}
-									</p>
-								</div>
-								<div className="ml-auto font-medium">
-									{transaction.type === 'Income' ? (
-										<div className="text-teal-700">+{transaction.amount}</div>
-									) : (
-										<div className="text-red-600">-{transaction.amount}</div>
-									)}
-								</div>
+						<div
+							key={transaction.id}
+							className="flex bg-accent p-4 rounded-xl gap-4 items-center mb-4"
+						>
+							<div className="text-lg">{transaction.category.emoji}</div>
+							<div className="flex flex-col items-start gap-1">
+								<p className="text-base font-semibold">
+									{transaction.description
+										? transaction.description
+										: transaction.category.name}
+								</p>
+								<p className="text-sm text-accent-foreground">
+									{format(transaction.date, 'dd MMM, hh:mm a')}
+								</p>
 							</div>
-							{transactions.length - 1 !== index && <Separator />}
+							<div className="text-sm font-semibold ms-auto">
+								{transaction.type === 'Income' ? (
+									<div className="text-teal-700">+₹{transaction.amount}</div>
+								) : (
+									<div className="text-red-600">-₹{transaction.amount}</div>
+								)}
+							</div>
 						</div>
 					))}
 				</div>
