@@ -103,6 +103,8 @@ const TransactionChart = ({
 						margin={{
 							left: 12,
 							right: 12,
+							top: 12,
+							bottom: 12,
 						}}
 					>
 						<defs>
