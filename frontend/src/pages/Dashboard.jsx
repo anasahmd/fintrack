@@ -11,6 +11,7 @@ import TransactionChart from '@/components/TransactionChart';
 import TransactionSheet from '@/components/TransactionSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
+import { formatCompactCurrency, formatCurrency } from '@/utils/formatCurrency';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
@@ -47,19 +48,25 @@ const Dashboard = () => {
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Balance</CardDescription>
-						<CardTitle className="text-2xl font-semibold">₹{balance}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{formatCurrency(balance, user.currency)}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Income</CardDescription>
-						<CardTitle className="text-2xl font-semibold">₹{income}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{formatCurrency(income, user.currency)}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Expense</CardDescription>
-						<CardTitle className="text-2xl font-semibold">₹{expense}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">
+							{formatCurrency(expense, user.currency)}
+						</CardTitle>
 					</CardHeader>
 				</Card>
 			</div>

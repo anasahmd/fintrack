@@ -3,6 +3,10 @@ const Joi = require('joi');
 // Schema for validating the request body when creating and updating a transaction
 
 const transactionSchema = Joi.object({
+	title: Joi.string().allow('').max(30).optional().messages({
+		'string.max': 'Title cannot be longer than 30 characters',
+	}),
+
 	amount: Joi.number().required().messages({
 		'number.base': 'Amount must be a number',
 		'any.required': 'Amount is required',
@@ -34,7 +38,7 @@ const transactionSchema = Joi.object({
 				.messages({
 					'string.empty': 'Tags cannot be empty',
 					'string.max': 'Each tag cannot be longer than 30 characters',
-				})
+				}),
 		)
 		.max(10) // Allow a maximum of 10 tags per transaction
 		.optional()
@@ -49,6 +53,13 @@ const transactionSchema = Joi.object({
 });
 
 const updateTransactionSchema = Joi.object({
+	title: Joi.string()
+		.allow('') // Allow empty string since it's optional
+		.max(30)
+		.optional()
+		.messages({
+			'string.max': 'Title cannot be longer than 30 characters',
+		}),
 	amount: Joi.number()
 		.optional()
 		.messages({ 'number.base': 'Amount must be a number' }),

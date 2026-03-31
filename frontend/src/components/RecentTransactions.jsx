@@ -6,8 +6,12 @@ import {
 	CardDescription,
 } from '@/components/ui/card';
 import { formatTransactionDate } from '@/utils/date';
+import { formatCompactCurrency } from '@/utils/formatCurrency';
+import { useSelector } from 'react-redux';
 
 const RecentTransactions = ({ transactions }) => {
+	const { user } = useSelector((state) => state.auth);
+
 	return (
 		<Card className="h-full">
 			<CardHeader>
@@ -36,9 +40,13 @@ const RecentTransactions = ({ transactions }) => {
 							</div>
 							<div className="text-sm font-semibold ms-auto">
 								{transaction.type === 'Income' ? (
-									<div className="text-teal-700">+₹{transaction.amount}</div>
+									<div className="text-teal-700">
+										+{formatCompactCurrency(transaction.amount, user.currency)}
+									</div>
 								) : (
-									<div className="text-red-600">-₹{transaction.amount}</div>
+									<div className="text-red-600">
+										-{formatCompactCurrency(transaction.amount, user.currency)}
+									</div>
 								)}
 							</div>
 						</div>

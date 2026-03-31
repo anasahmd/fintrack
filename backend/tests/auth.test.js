@@ -62,7 +62,7 @@ describe('registration test with one user in db', () => {
 
 		assert.strictEqual(
 			response.body.error,
-			'An account with this email already exists'
+			'An account with this email already exists',
 		);
 
 		const usersAtEnd = await helper.usersInDb();
@@ -108,7 +108,7 @@ describe('registration test with one user in db', () => {
 
 		assert.strictEqual(
 			response.body.error,
-			'Please enter a valid email address'
+			'Please enter a valid email address',
 		);
 
 		const usersAtEnd = await helper.usersInDb();
@@ -154,7 +154,7 @@ describe('registration test with one user in db', () => {
 
 		assert.strictEqual(
 			response.body.error,
-			'Password must be at least 6 characters long'
+			'Password must be at least 6 characters long',
 		);
 
 		const usersAtEnd = await helper.usersInDb();
@@ -200,7 +200,7 @@ describe('registration test with one user in db', () => {
 
 		assert.strictEqual(
 			response.body.error,
-			'Name must be at least 2 characters long'
+			'Name must be at least 2 characters long',
 		);
 
 		const usersAtEnd = await helper.usersInDb();
@@ -248,7 +248,7 @@ describe('login test', () => {
 			.send(loginInfo)
 			.expect(401);
 
-		assert.strictEqual(response.body.error, 'Invalid email or password');
+		assert.strictEqual(response.body.error, 'Wrong credentials');
 	});
 
 	test('fails if email field is empty', async () => {
@@ -277,7 +277,7 @@ describe('login test', () => {
 
 		assert.strictEqual(
 			response.body.error,
-			'Please enter a valid email address'
+			'Please enter a valid email address',
 		);
 	});
 

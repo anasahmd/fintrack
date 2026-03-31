@@ -5,11 +5,19 @@ const transactionSchema = mongoose.Schema(
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
+			required: true,
+		},
+		title: {
+			type: String,
+			trim: true,
+			default: '',
+			maxlength: [30, 'Title cannot exceed 30 characters'],
 		},
 		description: {
 			type: String,
 			trim: true,
 			default: '',
+			maxlength: [250, 'Description cannot exceed 250 characters'],
 		},
 		amount: {
 			type: Number,

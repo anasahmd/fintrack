@@ -223,6 +223,51 @@ describe('actions requiring authentication', () => {
 			);
 		});
 
+		test('post request saves the title successfully when provided', async () => {
+			const newTransaction = {
+				title: 'Starbucks Coffee',
+				amount: 10,
+				type: 'Expense',
+				category: testCategoryId,
+				description: 'Chai',
+				tags: ['chai'],
+				date: new Date('2025-10-01T10:00:00Z'),
+			};
+
+			const response = await api
+				.post('/api/transactions')
+				.set('Authorization', `Bearer ${token}`)
+				.send(newTransaction)
+				.expect(201)
+				.expect('Content-Type', /application\/json/);
+
+			assert.strictEqual(response.body.title, 'Starbucks Coffee');
+		});
+
+		test('post request fails if title is longer than 30 characters', async () => {
+			const longTitle = 'a'.repeat(31); // 31 characters
+			const newTransaction = {
+				title: longTitle,
+				amount: 10,
+				type: 'Expense',
+				category: testCategoryId,
+				description: 'Chai',
+				tags: ['chai'],
+				date: new Date('2025-10-01T10:00:00Z'),
+			};
+
+			const response = await api
+				.post('/api/transactions')
+				.set('Authorization', `Bearer ${token}`)
+				.send(newTransaction)
+				.expect(400);
+
+			assert.strictEqual(
+				response.body.error,
+				'Title cannot be longer than 30 characters',
+			);
+		});
+
 		test('post request fails if category is not given', async () => {
 			const newTransaction = {
 				amount: 10,

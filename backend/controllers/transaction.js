@@ -7,7 +7,7 @@ const {
 } = require('../validations/transaction');
 
 const getAllTransaction = async (request, response, next) => {
-	const transactions = await Transaction.find({ user: request.user._id })
+	const transactions = await Transaction.find({ user: request.user.id })
 		.populate('category', 'name emoji')
 		.sort({ date: -1 });
 	return response.status(200).json(transactions);
@@ -38,7 +38,7 @@ const postTransaction = async (request, response, next) => {
 
 	const newTransaction = new Transaction({
 		...request.body,
-		user: request.user._id,
+		user: request.user.id,
 	});
 
 	const savedTransaction = await newTransaction.save();
