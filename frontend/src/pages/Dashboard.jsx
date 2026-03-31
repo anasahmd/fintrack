@@ -47,23 +47,19 @@ const Dashboard = () => {
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Balance</CardDescription>
-						<CardTitle className="text-2xl font-semibold">
-							$ {balance}
-						</CardTitle>
+						<CardTitle className="text-2xl font-semibold">₹{balance}</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Income</CardDescription>
-						<CardTitle className="text-2xl font-semibold">$ {income}</CardTitle>
+						<CardTitle className="text-2xl font-semibold">₹{income}</CardTitle>
 					</CardHeader>
 				</Card>
 				<Card>
 					<CardHeader>
 						<CardDescription>Total Expense</CardDescription>
-						<CardTitle className="text-2xl font-semibold">
-							$ {expense}
-						</CardTitle>
+						<CardTitle className="text-2xl font-semibold">₹{expense}</CardTitle>
 					</CardHeader>
 				</Card>
 			</div>

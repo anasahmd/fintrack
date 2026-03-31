@@ -5,8 +5,7 @@ import {
 	CardTitle,
 	CardDescription,
 } from '@/components/ui/card';
-import { Separator } from './ui/separator';
-import { format } from 'date-fns';
+import { formatTransactionDate } from '@/utils/date';
 
 const RecentTransactions = ({ transactions }) => {
 	return (
@@ -32,7 +31,7 @@ const RecentTransactions = ({ transactions }) => {
 										: transaction.category.name}
 								</p>
 								<p className="text-sm text-accent-foreground">
-									{format(transaction.date, 'dd MMM, hh:mm a')}
+									{formatTransactionDate(transaction.date, 'dd MMM, hh:mm a')}
 								</p>
 							</div>
 							<div className="text-sm font-semibold ms-auto">
