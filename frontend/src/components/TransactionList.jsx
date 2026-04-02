@@ -8,9 +8,11 @@ import {
 import { formatTransactionDate } from '@/utils/date';
 import { formatCompactCurrency } from '@/utils/formatCurrency';
 import { useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 
-const RecentTransactions = ({ transactions }) => {
+const TransactionList = ({ transactions }) => {
 	const { user } = useSelector((state) => state.auth);
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	return (
 		<Card className="h-full">
@@ -25,13 +27,16 @@ const RecentTransactions = ({ transactions }) => {
 					{transactions.map((transaction, index) => (
 						<div
 							key={transaction.id}
-							className="flex bg-accent p-4 rounded-xl gap-4 items-center mb-4"
+							className="flex bg-accent p-4 rounded-xl gap-4 items-center mb-4 cursor-pointer"
+							onClick={() =>
+								setSearchParams({ editTransaction: transaction.id })
+							}
 						>
 							<div className="text-lg">{transaction.category.emoji}</div>
 							<div className="flex flex-col items-start gap-1">
 								<p className="text-base font-semibold">
-									{transaction.description
-										? transaction.description
+									{transaction.title
+										? transaction.title
 										: transaction.category.name}
 								</p>
 								<p className="text-sm text-accent-foreground">
@@ -57,4 +62,4 @@ const RecentTransactions = ({ transactions }) => {
 	);
 };
 
-export default RecentTransactions;
+export default TransactionList;

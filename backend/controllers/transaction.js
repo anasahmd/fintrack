@@ -1,6 +1,6 @@
 const transactionRouter = require('express').Router();
 const Transaction = require('../models/transaction');
-const User = require('../models/user');
+const Category = require('../models/category');
 const {
 	transactionSchema,
 	updateTransactionSchema,
@@ -59,13 +59,25 @@ const updateTransaction = async (request, response, next) => {
 	}
 
 	try {
-		await updateTransactionSchema.validateAsync(request.body);
+		await transactionSchema.validateAsync(request.body);
 	} catch (e) {
 		return response.status(400).json({ error: e.details[0].message });
 	}
 
+	const category = await Category.findById(request.body.category);
+
+	if (!category) {
+		return response.status(400).json({ error: 'Category not found' });
+	}
+
+	if (category.type !== request.body.type) {
+		return response.status(400).json({
+			error: `Type mismatch: You cannot assign a ${category.type} category to an ${request.body.type} transaction.`,
+		});
+	}
+
 	const updatedTransaction = await Transaction.findByIdAndUpdate(
-		transaction._id,
+		transaction.id,
 		request.body,
 		{ new: true, runValidators: true, context: 'query' },
 	).populate('category', 'name emoji');

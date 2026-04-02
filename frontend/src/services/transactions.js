@@ -12,4 +12,9 @@ const create = async (payload) => {
 	return response.data;
 };
 
-export default { create, getAll };
+const edit = async (id, payload) => {
+	const response = await api.put(`${endpoint}/${id}`, payload);
+	return response.data;
+};
+
+export default { create, edit, getAll };

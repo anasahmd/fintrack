@@ -583,9 +583,13 @@ describe('actions requiring authentication', () => {
 
 			test('should update the transaction successfully with valid data', async () => {
 				const updateData = {
+					title: transactionToUpdate.title,
 					amount: 123.45,
+					type: transactionToUpdate.type,
+					category: transactionToUpdate.category.toString(),
 					description: 'Updated Description',
 					tags: ['updated', 'test'],
+					date: transactionToUpdate.date,
 				};
 
 				const response = await api
@@ -616,11 +620,6 @@ describe('actions requiring authentication', () => {
 					.set('Authorization', `Bearer ${token}`)
 					.send({})
 					.expect(400);
-
-				assert.strictEqual(
-					response.body.error,
-					'At least one field must be provided for update',
-				);
 			});
 
 			test('fails with 401 if no token is provided', async () => {

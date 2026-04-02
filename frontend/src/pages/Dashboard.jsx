@@ -6,15 +6,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import RecentTransactions from '@/components/RecentTransactions';
+import TransactionList from '@/components/TransactionList';
 import TransactionChart from '@/components/TransactionChart';
 import TransactionSheet from '@/components/TransactionSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
 import { formatCompactCurrency, formatCurrency } from '@/utils/formatCurrency';
+import { useSearchParams } from 'react-router-dom';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
+
+	const [searchParams, setSearchParams] = useSearchParams();
+	const editId = searchParams.get('editTransaction');
 
 	const { user } = useSelector((state) => state.auth);
 
@@ -22,6 +26,10 @@ const Dashboard = () => {
 	const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
 	const { items: transactions } = useSelector((state) => state.transactions);
+
+	const editTransaction = transactions.find(
+		(transaction) => transaction.id === editId,
+	);
 
 	useEffect(() => {
 		dispatch(fetchTransactions());
@@ -41,7 +49,7 @@ const Dashboard = () => {
 		<div className="p-4 md:p-8 max-w-6xl mx-auto space-y-8">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
-				<TransactionSheet />
+				<TransactionSheet initialData={editTransaction} />
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -73,15 +81,15 @@ const Dashboard = () => {
 
 			<div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
 				<div className="lg:col-span-3">
-					<TransactionChart transactions={transactions} />
-				</div>
-
-				<div className="lg:col-span-2">
-					<RecentTransactions
+					<TransactionChart
 						transactions={transactions}
 						month={viewMonth}
 						year={viewYear}
 					/>
+				</div>
+
+				<div className="lg:col-span-2">
+					<TransactionList transactions={transactions} />
 				</div>
 			</div>
 		</div>

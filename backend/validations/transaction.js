@@ -60,6 +60,7 @@ const updateTransactionSchema = Joi.object({
 		.messages({
 			'string.max': 'Title cannot be longer than 30 characters',
 		}),
+		
 	amount: Joi.number()
 		.optional()
 		.messages({ 'number.base': 'Amount must be a number' }),

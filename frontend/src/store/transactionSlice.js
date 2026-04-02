@@ -15,6 +15,13 @@ export const addTransaction = createAsyncThunk(
 	},
 );
 
+export const editTransaction = createAsyncThunk(
+	'transactions/edit',
+	async ({ id, apiPayload }) => {
+		return await transactionService.edit(id, apiPayload);
+	},
+);
+
 export const transactionSlice = createSlice({
 	name: 'transactions',
 
@@ -31,6 +38,14 @@ export const transactionSlice = createSlice({
 			})
 			.addCase(addTransaction.fulfilled, (state, action) => {
 				state.items.unshift(action.payload);
+			})
+			.addCase(editTransaction.fulfilled, (state, action) => {
+				const index = state.items.findIndex(
+					(item) => item.id === action.payload.id,
+				);
+				if (index !== -1) {
+					state.items[index] = action.payload;
+				}
 			});
 	},
 });

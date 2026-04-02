@@ -2,10 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
 	Sheet,
-	SheetClose,
 	SheetContent,
 	SheetDescription,
-	SheetFooter,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
@@ -13,13 +11,38 @@ import {
 import { Button } from '@/components/ui/button';
 
 import TransactionForm from './TransactionForm';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
-const TransactionSheet = () => {
-	const [isSheetOpen, setIsSheetOpen] = useState(false);
+const TransactionSheet = ({ initialData }) => {
+	const [searchParams, setSearchParams] = useSearchParams();
+
+	const [isSheetOpen, setIsSheetOpen] = useState(Boolean(initialData) || false);
+
+	const [activeTab, setActiveTab] = useState(initialData?.type || 'Expense');
+
+	useEffect(() => {
+		if (initialData !== undefined) {
+			setIsSheetOpen(true);
+		}
+		if (initialData) {
+			setActiveTab(initialData.type);
+		} else {
+			setActiveTab('Expense');
+		}
+	}, [initialData]);
+
+	const handleOpenChange = (newOpenState) => {
+		setIsSheetOpen(newOpenState);
+
+		if (!newOpenState && searchParams.get('editTransaction')) {
+			searchParams.delete('editTransaction');
+			setSearchParams(searchParams);
+		}
+	};
 
 	return (
-		<Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+		<Sheet open={isSheetOpen} onOpenChange={handleOpenChange}>
 			<SheetTrigger asChild>
 				<Button variant="outline" className="cursor-pointer">
 					Add Transaction
@@ -31,16 +54,25 @@ const TransactionSheet = () => {
 					<SheetDescription>Click save when you&apos;re done.</SheetDescription>
 				</SheetHeader>
 
-				<Tabs defaultValue="overview">
+				<Tabs value={activeTab} onValueChange={setActiveTab}>
 					<TabsList variant="line">
 						<TabsTrigger value="Expense">Expense</TabsTrigger>
 						<TabsTrigger value="Income">Income</TabsTrigger>
 					</TabsList>
+
 					<TabsContent value="Expense">
-						<TransactionForm type="Expense" setSheetOpen={setIsSheetOpen} />
+						<TransactionForm
+							type="Expense"
+							initialData={initialData}
+							setSheetOpen={handleOpenChange}
+						/>
 					</TabsContent>
 					<TabsContent value="Income">
-						<TransactionForm type="Income" setSheetOpen={setIsSheetOpen} />
+						<TransactionForm
+							type="Income"
+							initialData={initialData}
+							setSheetOpen={handleOpenChange}
+						/>
 					</TabsContent>
 				</Tabs>
 			</SheetContent>

@@ -2,20 +2,15 @@ import {
 	Select,
 	SelectContent,
 	SelectItem,
-	SelectSeparator,
 	SelectTrigger,
 	SelectValue,
 } from './ui/select';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useEffect, useState } from 'react';
-import { SheetClose, SheetFooter } from './ui/sheet';
 import { Button } from './ui/button';
-import categoryService from '@/services/categories';
 import {
 	Field,
 	FieldContent,
-	FieldDescription,
 	FieldError,
 	FieldGroup,
 	FieldLabel,
@@ -24,10 +19,9 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { ChevronDownIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
-import transactionService from '@/services/transactions';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '@/store/categorySlice';
-import { addTransaction } from '@/store/transactionSlice';
+import { addTransaction, editTransaction } from '@/store/transactionSlice';
 import { Controller, useForm } from 'react-hook-form';
 import { transactionFormSchema } from '@/validations/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,7 +33,7 @@ import {
 	InputGroupTextarea,
 } from './ui/input-group';
 
-const TransactionForm = ({ type, setSheetOpen }) => {
+const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	const dispatch = useDispatch();
 	const { items: categories } = useSelector((state) => state.categories);
 
@@ -53,19 +47,28 @@ const TransactionForm = ({ type, setSheetOpen }) => {
 
 	const filteredCategories = categories.filter((cat) => cat.type === type);
 
+	console.log(initialData);
+
 	const form = useForm({
 		resolver: zodResolver(transactionFormSchema),
 		defaultValues: {
-			title: '',
-			amount: '',
+			title: initialData?.title || '',
+			amount: initialData?.amount || '',
 			type: type || 'Expense',
-			category: '',
-			description: '',
-			tags: '',
-			date: new Date(),
-			time: format(new Date(), 'HH:mm'),
+			category:
+				initialData?.type === type ? initialData?.category?.id || '' : '',
+			description: initialData?.description || '',
+			tags: initialData?.tags?.join(', ') || '',
+			date: initialData?.date ? new Date(initialData.date) : new Date(),
+			time: initialData?.date
+				? format(new Date(initialData.date), 'HH:mm')
+				: format(new Date(), 'HH:mm'),
 		},
 	});
+
+	useEffect(() => {
+		form.setValue('type', type);
+	}, [type, form]);
 
 	const onSubmit = async (data) => {
 		const formattedTags = data.tags
@@ -89,15 +92,27 @@ const TransactionForm = ({ type, setSheetOpen }) => {
 		delete apiPayload.time;
 
 		try {
-			await dispatch(addTransaction(apiPayload)).unwrap();
+			if (initialData) {
+				await dispatch(
+					editTransaction({ id: initialData.id, apiPayload }),
+				).unwrap();
+				toast.success('Transaction edited!');
+			} else {
+				await dispatch(addTransaction(apiPayload)).unwrap();
+				toast.success('Transaction saved!');
+			}
 
-			toast.success('Transaction saved!');
 			if (setSheetOpen) {
 				setSheetOpen(false);
 			}
 		} catch (error) {
-			toast.error('Failed to save transaction');
-			console.error('Failed to save transaction:', error);
+			if (initialData) {
+				toast.error('Failed to edit transaction');
+				console.error('Failed to edit transaction:', error);
+			} else {
+				toast.error('Failed to save transaction');
+				console.error('Failed to save transaction:', error);
+			}
 		}
 	};
 
@@ -304,14 +319,20 @@ const TransactionForm = ({ type, setSheetOpen }) => {
 						</Field>
 					)}
 				/>
-				<SheetFooter className="w-full px-0 py-2">
-					<Button type="submit">
-						{form.formState.isSubmitting ? 'Saving...' : 'Save'}
-					</Button>
-					<SheetClose asChild>
-						<Button variant="outline">Close</Button>
-					</SheetClose>
-				</SheetFooter>
+
+				<Button
+					type="submit"
+					className="w-full"
+					disabled={form.formState.isSubmitting}
+				>
+					{initialData
+						? form.formState.isSubmitting
+							? 'Editing...'
+							: 'Edit'
+						: form.formState.isSubmitting
+							? 'Saving...'
+							: 'Save'}
+				</Button>
 			</form>
 		</div>
 	);
