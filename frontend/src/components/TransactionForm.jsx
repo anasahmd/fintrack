@@ -21,7 +21,11 @@ import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategories } from '@/store/categorySlice';
-import { addTransaction, editTransaction } from '@/store/transactionSlice';
+import {
+	addTransaction,
+	deleteTransaction,
+	editTransaction,
+} from '@/store/transactionSlice';
 import { Controller, useForm } from 'react-hook-form';
 import { transactionFormSchema } from '@/validations/transaction';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,6 +36,17 @@ import {
 	InputGroupText,
 	InputGroupTextarea,
 } from './ui/input-group';
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from './ui/alert-dialog';
 
 const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	const dispatch = useDispatch();
@@ -46,8 +61,6 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	}, [categories.length, dispatch]);
 
 	const filteredCategories = categories.filter((cat) => cat.type === type);
-
-	console.log(initialData);
 
 	const form = useForm({
 		resolver: zodResolver(transactionFormSchema),
@@ -113,6 +126,16 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 				toast.error('Failed to save transaction');
 				console.error('Failed to save transaction:', error);
 			}
+		}
+	};
+
+	const handleDelete = async () => {
+		try {
+			await dispatch(deleteTransaction(initialData.id)).unwrap();
+			setSheetOpen(false);
+			toast.success('Transaction deleted');
+		} catch (e) {
+			toast.error('Failed to delete transaction!');
 		}
 	};
 
@@ -320,19 +343,79 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 					)}
 				/>
 
-				<Button
-					type="submit"
-					className="w-full"
-					disabled={form.formState.isSubmitting}
-				>
-					{initialData
-						? form.formState.isSubmitting
-							? 'Editing...'
-							: 'Edit'
-						: form.formState.isSubmitting
-							? 'Saving...'
-							: 'Save'}
-				</Button>
+				{initialData ? (
+					<div className="flex w-full items-center justify-between pt-6 mt-4">
+						<AlertDialog>
+							<AlertDialogTrigger asChild>
+								<Button
+									type="button"
+									className="cursor-pointer"
+									variant="destructive"
+								>
+									Delete
+								</Button>
+							</AlertDialogTrigger>
+							<AlertDialogContent>
+								<AlertDialogHeader>
+									<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+									<AlertDialogDescription>
+										This action cannot be undone. This will permanently delete
+										this transaction from your records and update your balance.
+									</AlertDialogDescription>
+								</AlertDialogHeader>
+								<AlertDialogFooter>
+									<AlertDialogCancel className="cursor-pointer">
+										Cancel
+									</AlertDialogCancel>
+									<AlertDialogAction
+										onClick={handleDelete}
+										disabled={form.formState.isSubmitting}
+										variant="destructive"
+										className="cursor-pointer"
+									>
+										Yes, delete transaction
+									</AlertDialogAction>
+								</AlertDialogFooter>
+							</AlertDialogContent>
+						</AlertDialog>
+
+						<div className="flex gap-3">
+							<Button
+								type="button"
+								variant="outline"
+								className="cursor-pointer"
+								onClick={() => setSheetOpen(false)}
+							>
+								Cancel
+							</Button>
+							<Button
+								type="submit"
+								className="cursor-pointer"
+								disabled={form.formState.isSubmitting}
+							>
+								Save Changes
+							</Button>
+						</div>
+					</div>
+				) : (
+					<div className="grid grid-cols-2 gap-3 w-full pt-6 mt-4">
+						<Button
+							type="button"
+							variant="outline"
+							className="cursor-pointer"
+							onClick={() => setSheetOpen(false)}
+						>
+							Cancel
+						</Button>
+						<Button
+							type="submit"
+							className="cursor-pointer"
+							disabled={form.formState.isSubmitting}
+						>
+							Add Transaction
+						</Button>
+					</div>
+				)}
 			</form>
 		</div>
 	);

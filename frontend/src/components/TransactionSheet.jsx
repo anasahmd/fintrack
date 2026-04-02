@@ -49,15 +49,18 @@ const TransactionSheet = ({ initialData }) => {
 				</Button>
 			</SheetTrigger>
 			<SheetContent>
-				<SheetHeader>
-					<SheetTitle>Add Transaction</SheetTitle>
-					<SheetDescription>Click save when you&apos;re done.</SheetDescription>
+				<SheetHeader className="py-2 px-4 text-xl m-2">
+					<SheetTitle>{initialData ? 'Edit ' : 'Add '} Transaction</SheetTitle>
 				</SheetHeader>
 
-				<Tabs value={activeTab} onValueChange={setActiveTab}>
+				<Tabs className="pt-0" value={activeTab} onValueChange={setActiveTab}>
 					<TabsList variant="line">
-						<TabsTrigger value="Expense">Expense</TabsTrigger>
-						<TabsTrigger value="Income">Income</TabsTrigger>
+						<TabsTrigger value="Expense" className="cursor-pointer">
+							Expense
+						</TabsTrigger>
+						<TabsTrigger value="Income" className="cursor-pointer">
+							Income
+						</TabsTrigger>
 					</TabsList>
 
 					<TabsContent value="Expense">

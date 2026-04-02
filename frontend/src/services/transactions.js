@@ -2,19 +2,29 @@ import { api } from './api';
 
 const endpoint = '/transactions';
 
-const getAll = async () => {
+const getAllTransactions = async () => {
 	const response = await api.get(endpoint);
 	return response.data;
 };
 
-const create = async (payload) => {
+const createTransaction = async (payload) => {
 	const response = await api.post(endpoint, payload);
 	return response.data;
 };
 
-const edit = async (id, payload) => {
+const editTransaction = async (id, payload) => {
 	const response = await api.put(`${endpoint}/${id}`, payload);
 	return response.data;
 };
 
-export default { create, edit, getAll };
+const deleteTransaction = async (id) => {
+	await api.delete(`${endpoint}/${id}`);
+	return id;
+};
+
+export default {
+	createTransaction,
+	editTransaction,
+	deleteTransaction,
+	getAllTransactions,
+};
