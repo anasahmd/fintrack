@@ -37,7 +37,8 @@ export const transactionSlice = createSlice({
 				state.items = action.payload;
 			})
 			.addCase(addTransaction.fulfilled, (state, action) => {
-				state.items.unshift(action.payload);
+				state.items.push(action.payload);
+				state.items.sort((a, b) => new Date(b.date) - new Date(a.date));
 			})
 			.addCase(editTransaction.fulfilled, (state, action) => {
 				const index = state.items.findIndex(
@@ -45,6 +46,7 @@ export const transactionSlice = createSlice({
 				);
 				if (index !== -1) {
 					state.items[index] = action.payload;
+					state.items.sort((a, b) => new Date(b.date) - new Date(a.date));
 				}
 			});
 	},
