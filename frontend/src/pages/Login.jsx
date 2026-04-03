@@ -38,10 +38,10 @@ const Login = () => {
 	};
 
 	return (
-		<div className="flex h-screen items-center justify-center bg-accent">
+		<div className="flex h-screen items-center justify-center ">
 			<section className="flex min-h-screen w-full items-center justify-center py-4 lg:py-20">
 				<div className="w-full max-w-sm space-y-6">
-					<h2 className="mt-6 text-3xl text-start font-semibold">
+					<h2 className="mt-6 text-2xl text-start font-bold">
 						Sign in to your account
 					</h2>
 					<form
@@ -110,7 +110,7 @@ const Login = () => {
 
 					<div className="space-y-6 lg:mt-10">
 						Don't have an account?{' '}
-						<Link to="/register" className="underline">
+						<Link to="/register" className="underline text-primary">
 							Sign Up
 						</Link>
 					</div>

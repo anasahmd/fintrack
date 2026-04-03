@@ -44,7 +44,10 @@ const TransactionSheet = ({ initialData }) => {
 	return (
 		<Sheet open={isSheetOpen} onOpenChange={handleOpenChange}>
 			<SheetTrigger asChild>
-				<Button variant="outline" className="cursor-pointer">
+				<Button
+					variant="outline"
+					className="cursor-pointer bg-primary text-primary-foreground"
+				>
 					Add Transaction
 				</Button>
 			</SheetTrigger>

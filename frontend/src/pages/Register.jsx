@@ -41,10 +41,12 @@ const Register = () => {
 	};
 
 	return (
-		<div className="flex h-screen items-center justify-center bg-accent">
+		<div className="flex h-screen items-center justify-center">
 			<section className="flex w-full items-center justify-center">
 				<div className="w-full max-w-sm space-y-6">
-					<h2 className="text-3xl font-semibold">Create a new account</h2>
+					<h2 className="text-2xl font-bold text-start">
+						Create a new account
+					</h2>
 
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
@@ -151,7 +153,7 @@ const Register = () => {
 
 					<div className="space-y-6 lg:mt-10">
 						Already have an account?{' '}
-						<Link to="/login" className="underline">
+						<Link to="/login" className="underline text-primary">
 							Sign In
 						</Link>
 					</div>

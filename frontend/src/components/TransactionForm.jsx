@@ -16,7 +16,7 @@ import {
 	FieldLabel,
 } from './ui/field';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { ChevronDownIcon } from 'lucide-react';
+import { ChevronDownIcon, Trash2Icon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from './ui/calendar';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,6 +44,7 @@ import {
 	AlertDialogDescription,
 	AlertDialogFooter,
 	AlertDialogHeader,
+	AlertDialogMedia,
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from './ui/alert-dialog';
@@ -182,6 +183,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 									name={field.name}
 									value={field.value}
 									onValueChange={field.onChange}
+									disabled={true}
 								>
 									<SelectTrigger
 										id={field.name}
@@ -388,32 +390,38 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 						<AlertDialog>
 							<AlertDialogTrigger asChild>
 								<Button
+									variant="destructive"
 									type="button"
 									className="cursor-pointer"
-									variant="destructive"
 								>
 									Delete
 								</Button>
 							</AlertDialogTrigger>
-							<AlertDialogContent>
+							<AlertDialogContent size="sm">
 								<AlertDialogHeader>
-									<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+									<AlertDialogMedia className="bg-destructive/10 text-destructive dark:bg-destructive/20 dark:text-destructive">
+										<Trash2Icon />
+									</AlertDialogMedia>
+									<AlertDialogTitle>Delete transaction?</AlertDialogTitle>
 									<AlertDialogDescription>
 										This action cannot be undone. This will permanently delete
 										this transaction from your records and update your balance.
 									</AlertDialogDescription>
 								</AlertDialogHeader>
 								<AlertDialogFooter>
-									<AlertDialogCancel className="cursor-pointer">
+									<AlertDialogCancel
+										variant="outline"
+										className="cursor-pointer"
+									>
 										Cancel
 									</AlertDialogCancel>
 									<AlertDialogAction
-										onClick={handleDelete}
-										disabled={form.formState.isSubmitting}
 										variant="destructive"
 										className="cursor-pointer"
+										onClick={handleDelete}
+										disabled={form.formState.isSubmitting}
 									>
-										Yes, delete transaction
+										Delete
 									</AlertDialogAction>
 								</AlertDialogFooter>
 							</AlertDialogContent>

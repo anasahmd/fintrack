@@ -24,6 +24,8 @@ const transactionSchema = mongoose.Schema(
 			type: Number,
 			required: [true, 'Amount is required'],
 		},
+		// 	exchangeRate: { type: Number, default: 1 },
+		// baseCurrencySnapshot: { type: String, required: [true, 'Base currency is required'] },
 		type: {
 			type: String,
 			enum: ['Income', 'Expense'],

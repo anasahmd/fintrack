@@ -33,6 +33,7 @@ export const transactionFormSchema = z.object({
 				!issue.input ? 'Currency is required' : 'Invalid currency',
 		},
 	),
+
 	date: z.date({
 		error: (issue) =>
 			!issue.input ? 'Date is required' : "That's not a valid date!",
