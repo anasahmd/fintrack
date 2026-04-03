@@ -8,6 +8,8 @@ const getAllTransactions = async () => {
 };
 
 const createTransaction = async (payload) => {
+	console.log(payload);
+
 	const response = await api.post(endpoint, payload);
 	return response.data;
 };

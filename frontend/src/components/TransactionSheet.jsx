@@ -48,7 +48,7 @@ const TransactionSheet = ({ initialData }) => {
 					Add Transaction
 				</Button>
 			</SheetTrigger>
-			<SheetContent>
+			<SheetContent className="w-full h-full p-4 sm:h-screen sm:w-100 sm:max-w-100 overflow-y-auto">
 				<SheetHeader className="py-2 px-4 text-xl m-2">
 					<SheetTitle>{initialData ? 'Edit ' : 'Add '} Transaction</SheetTitle>
 				</SheetHeader>

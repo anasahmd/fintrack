@@ -50,6 +50,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				category: testCategoryId,
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -78,6 +79,7 @@ describe('actions requiring authentication', () => {
 				amount: 50,
 				type: 'Expense',
 				category: testCategoryId,
+				currency: 'INR',
 			};
 
 			const response = await api
@@ -103,6 +105,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				category: testCategoryId,
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -122,6 +125,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				type: 'Expense',
 				category: testCategoryId,
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -147,6 +151,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 'ten',
 				type: 'Expense',
+				currency: 'INR',
 				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
@@ -173,6 +178,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				category: testCategoryId,
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -199,6 +205,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Incorrect',
 				category: testCategoryId,
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -228,6 +235,7 @@ describe('actions requiring authentication', () => {
 				title: 'Starbucks Coffee',
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				category: testCategoryId,
 				description: 'Chai',
 				tags: ['chai'],
@@ -249,6 +257,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				title: longTitle,
 				amount: 10,
+				currency: 'INR',
 				type: 'Expense',
 				category: testCategoryId,
 				description: 'Chai',
@@ -272,6 +281,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				description: 'Chai',
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -297,6 +307,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				description: 'Chai',
 				category: '',
 				tags: ['chai'],
@@ -325,6 +336,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: longDescription,
+				currency: 'INR',
 				category: testCategoryId,
 				tags: ['chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -353,6 +365,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				description: 'Chai',
 				category: testCategoryId,
 				tags: ['', 'chai'],
@@ -381,6 +394,7 @@ describe('actions requiring authentication', () => {
 				amount: 10,
 				type: 'Expense',
 				description: 'Chai',
+				currency: 'INR',
 				category: testCategoryId,
 				tags: [longTag, 'chai'],
 				date: new Date('2025-10-01T10:00:00Z'),
@@ -410,6 +424,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				description: 'Chai',
 				category: testCategoryId,
 				tags: longTagsArray,
@@ -439,6 +454,7 @@ describe('actions requiring authentication', () => {
 			const newTransaction = {
 				amount: 10,
 				type: 'Expense',
+				currency: 'INR',
 				description: 'Chai',
 				category: testCategoryId,
 				tags: ['chai'],
@@ -585,6 +601,7 @@ describe('actions requiring authentication', () => {
 				const updateData = {
 					title: transactionToUpdate.title,
 					amount: 123.45,
+					currency: 'INR',
 					type: transactionToUpdate.type,
 					category: transactionToUpdate.category.toString(),
 					description: 'Updated Description',
@@ -625,6 +642,7 @@ describe('actions requiring authentication', () => {
 			test('fails with 401 if no token is provided', async () => {
 				const updateData = {
 					amount: 123.45,
+					currency: 'INR',
 					description: 'Updated Description',
 					tags: ['updated', 'test'],
 				};

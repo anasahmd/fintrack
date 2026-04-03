@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { SUPPORTED_CURRENCIES } = require('../utils/constants');
 
 const transactionSchema = mongoose.Schema(
 	{
@@ -32,6 +33,12 @@ const transactionSchema = mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Category',
 			required: [true, 'Category is required'],
+		},
+		currency: {
+			type: String,
+			required: true,
+			enum: SUPPORTED_CURRENCIES,
+			default: 'INR',
 		},
 		tags: {
 			type: [String],

@@ -58,6 +58,7 @@ const register = async (request, response, next) => {
 			id: savedUser._id,
 			name: savedUser.name,
 			email: savedUser.email,
+			currency: savedUser.currency,
 		});
 	} catch (e) {
 		next(e);
@@ -89,7 +90,12 @@ const login = async (request, response, next) => {
 
 	const token = jwt.sign(userForToken, config.JWT_SECRET);
 
-	response.status(200).send({ token, email: user.email, name: user.name });
+	response.status(200).send({
+		token,
+		email: user.email,
+		name: user.name,
+		currency: user.currency,
+	});
 };
 
 module.exports = { register, login };

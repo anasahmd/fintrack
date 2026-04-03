@@ -1,3 +1,4 @@
+import { CURRENCY_OPTIONS } from '@/utils/constants';
 import { z } from 'zod';
 
 export const transactionFormSchema = z.object({
@@ -25,6 +26,13 @@ export const transactionFormSchema = z.object({
 		})
 		.min(1, { error: 'Please select a category' }),
 
+	currency: z.enum(
+		CURRENCY_OPTIONS.map((c) => c.code),
+		{
+			error: (issue) =>
+				!issue.input ? 'Currency is required' : 'Invalid currency',
+		},
+	),
 	date: z.date({
 		error: (issue) =>
 			!issue.input ? 'Date is required' : "That's not a valid date!",

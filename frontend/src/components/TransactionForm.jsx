@@ -47,10 +47,12 @@ import {
 	AlertDialogTitle,
 	AlertDialogTrigger,
 } from './ui/alert-dialog';
+import { CURRENCY_OPTIONS } from '@/utils/constants';
 
 const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	const dispatch = useDispatch();
 	const { items: categories } = useSelector((state) => state.categories);
+	const { user } = useSelector((state) => state.auth);
 
 	const [open, setOpen] = useState(false);
 
@@ -68,6 +70,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 			title: initialData?.title || '',
 			amount: initialData?.amount || '',
 			type: type || 'Expense',
+			currency: initialData?.currency || user?.currency,
 			category:
 				initialData?.type === type ? initialData?.category?.id || '' : '',
 			description: initialData?.description || '',
@@ -163,35 +166,72 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 						</Field>
 					)}
 				/>
-				<Controller
-					name="amount"
-					control={form.control}
-					render={({ field, fieldState }) => (
-						<Field data-invalid={fieldState.invalid}>
-							<FieldLabel htmlFor={field.name}>Amount</FieldLabel>
+				<Field
+					data-invalid={
+						!!form.formState.errors.amount || !!form.formState.errors.currency
+					}
+				>
+					<FieldLabel htmlFor="amount">Amount</FieldLabel>
 
-							<div className="relative flex items-center">
-								<span className="absolute left-3 text-muted-foreground">₹</span>
+					<div className="flex gap-2">
+						<Controller
+							name="currency"
+							control={form.control}
+							render={({ field, fieldState }) => (
+								<Select
+									name={field.name}
+									value={field.value}
+									onValueChange={field.onChange}
+								>
+									<SelectTrigger
+										id={field.name}
+										aria-invalid={fieldState.invalid}
+										className="w-20"
+									>
+										<SelectValue placeholder="Currency" />
+									</SelectTrigger>
+									<SelectContent position="item-aligned">
+										{CURRENCY_OPTIONS.map((curr) => (
+											<SelectItem key={curr.code} value={curr.code}>
+												{curr.symbol}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							)}
+						/>
+
+						<Controller
+							name="amount"
+							control={form.control}
+							render={({ field, fieldState }) => (
 								<Input
 									{...field}
-									id={field.name}
+									id="amount" // Matches the FieldLabel htmlFor
 									type="number"
 									step="any"
 									aria-invalid={fieldState.invalid}
 									placeholder="0.00"
-									// pl-8 pushes the typing cursor past the ₹ symbol
-									className="pl-8 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-								/>
-							</div>
-							{fieldState.invalid && (
-								<FieldError
-									className="text-start"
-									errors={[fieldState.error]}
+									className="flex-1 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
 								/>
 							)}
-						</Field>
+						/>
+					</div>
+
+					{form.formState.errors.amount && (
+						<FieldError
+							className="text-start"
+							errors={[form.formState.errors.amount]}
+						/>
 					)}
-				/>
+					{form.formState.errors.currency && (
+						<FieldError
+							className="text-start"
+							errors={[form.formState.errors.currency]}
+						/>
+					)}
+				</Field>
+
 				<Controller
 					name="category"
 					control={form.control}

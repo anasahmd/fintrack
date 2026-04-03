@@ -1,4 +1,5 @@
 const Joi = require('joi');
+const { SUPPORTED_CURRENCIES } = require('../utils/constants');
 
 // Schema for validating the request body when creating and updating a transaction
 
@@ -11,6 +12,15 @@ const transactionSchema = Joi.object({
 		'number.base': 'Amount must be a number',
 		'any.required': 'Amount is required',
 	}),
+
+	currency: Joi.string()
+		.valid(...SUPPORTED_CURRENCIES)
+		.required()
+		.messages({
+			'any.only': 'Invalid currency selected',
+			'string.empty': 'Currency cannot be empty',
+			'any.required': 'Currency is required',
+		}),
 
 	type: Joi.string().valid('Income', 'Expense').required().messages({
 		'any.only': 'Type must be either "Income" or "Expense"',
@@ -52,6 +62,7 @@ const transactionSchema = Joi.object({
 	}),
 });
 
+// !!! Update the transaction schema for partial updates
 const updateTransactionSchema = Joi.object({
 	title: Joi.string()
 		.allow('') // Allow empty string since it's optional
@@ -60,7 +71,7 @@ const updateTransactionSchema = Joi.object({
 		.messages({
 			'string.max': 'Title cannot be longer than 30 characters',
 		}),
-		
+
 	amount: Joi.number()
 		.optional()
 		.messages({ 'number.base': 'Amount must be a number' }),

@@ -11,7 +11,6 @@ import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 
 const TransactionList = ({ transactions }) => {
-	const { user } = useSelector((state) => state.auth);
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	return (
@@ -46,11 +45,19 @@ const TransactionList = ({ transactions }) => {
 							<div className="text-sm font-semibold ms-auto">
 								{transaction.type === 'Income' ? (
 									<div className="text-teal-700">
-										+{formatCompactCurrency(transaction.amount, user.currency)}
+										+
+										{formatCompactCurrency(
+											transaction.amount,
+											transaction.currency,
+										)}
 									</div>
 								) : (
 									<div className="text-red-600">
-										-{formatCompactCurrency(transaction.amount, user.currency)}
+										-
+										{formatCompactCurrency(
+											transaction.amount,
+											transaction.currency,
+										)}
 									</div>
 								)}
 							</div>
