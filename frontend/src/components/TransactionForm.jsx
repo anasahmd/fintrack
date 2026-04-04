@@ -50,7 +50,7 @@ import {
 } from './ui/alert-dialog';
 import { CURRENCY_OPTIONS } from '@/utils/constants';
 
-const TransactionForm = ({ type, setSheetOpen, initialData }) => {
+const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 	const dispatch = useDispatch();
 	const { items: categories } = useSelector((state) => state.categories);
 	const { user } = useSelector((state) => state.auth);
@@ -119,9 +119,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 				toast.success('Transaction saved!');
 			}
 
-			if (setSheetOpen) {
-				setSheetOpen(false);
-			}
+			setIsModalOpen(false);
 		} catch (error) {
 			if (initialData) {
 				toast.error('Failed to edit transaction');
@@ -136,7 +134,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	const handleDelete = async () => {
 		try {
 			await dispatch(deleteTransaction(initialData.id)).unwrap();
-			setSheetOpen(false);
+			setIsModalOpen(false);
 			toast.success('Transaction deleted');
 		} catch (e) {
 			toast.error('Failed to delete transaction!');
@@ -144,7 +142,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 	};
 
 	return (
-		<div className="grid flex-1 auto-rows-min gap-6 px-4 overflow-y-auto max-h-[80vh] pb-8">
+		<div className="grid gap-6 px-4 pb-12 md:pb-8 overflow-y-auto">
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
 				<Controller
 					name="title"
@@ -432,7 +430,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 								type="button"
 								variant="outline"
 								className="cursor-pointer"
-								onClick={() => setSheetOpen(false)}
+								onClick={() => setIsModalOpen(false)}
 							>
 								Cancel
 							</Button>
@@ -451,7 +449,7 @@ const TransactionForm = ({ type, setSheetOpen, initialData }) => {
 							type="button"
 							variant="outline"
 							className="cursor-pointer"
-							onClick={() => setSheetOpen(false)}
+							onClick={() => setIsModalOpen(false)}
 						>
 							Cancel
 						</Button>

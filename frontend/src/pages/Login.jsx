@@ -38,7 +38,7 @@ const Login = () => {
 	};
 
 	return (
-		<section className="flex w-full items-center justify-center py-8 text-start">
+		<section className="flex w-full items-center justify-center py-8 mt-8 text-start">
 			<div className="w-full max-w-md space-y-6">
 				<h2 className="mt-6 text-3xl font-bold">Welcome back</h2>
 				<p className="mb-8">Please enter your details</p>

@@ -1,5 +1,5 @@
 import { logout } from '@/store/authSlice';
-import { Wallet } from 'lucide-react';
+import { ExternalLink, Wallet } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import { cn } from '@/lib/utils';
@@ -24,7 +24,7 @@ const Header = () => {
 				<div className="text-xl font-bold text-primary">Fintrack</div>
 			</div>
 
-			{user && (
+			{user ? (
 				<div className="flex items-center gap-4">
 					<span className="text-sm font-medium hidden sm:block">
 						{user.name}
@@ -38,6 +38,16 @@ const Header = () => {
 						Log out
 					</Button>
 				</div>
+			) : (
+				<a
+					href="https://anasahmad.dev"
+					target="_blank"
+					rel="noopener noreferrer"
+					className="group flex items-center gap-1 text-base font-medium text-muted-foreground transition-colors hover:text-primary"
+				>
+					<span>Built by Anas</span>
+					<ExternalLink className="h-3 w-3 opacity-50 group-hover:opacity-100" />
+				</a>
 			)}
 		</header>
 	);

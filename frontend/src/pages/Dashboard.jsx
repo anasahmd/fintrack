@@ -8,17 +8,14 @@ import {
 } from '@/components/ui/card';
 import TransactionList from '@/components/TransactionList';
 import TransactionChart from '@/components/TransactionChart';
-import TransactionSheet from '@/components/TransactionSheet';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
 import { formatCompactCurrency, formatCurrency } from '@/utils/formatCurrency';
 import { useSearchParams } from 'react-router-dom';
+import TransactionFormModal from '@/components/TransactionFormModal';
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
-
-	const [searchParams, setSearchParams] = useSearchParams();
-	const editId = searchParams.get('editTransaction');
 
 	const { user } = useSelector((state) => state.auth);
 
@@ -26,10 +23,6 @@ const Dashboard = () => {
 	const [viewYear, setViewYear] = useState(new Date().getFullYear());
 
 	const { items: transactions } = useSelector((state) => state.transactions);
-
-	const editTransaction = transactions.find(
-		(transaction) => transaction.id === editId,
-	);
 
 	useEffect(() => {
 		dispatch(fetchTransactions());
@@ -49,7 +42,7 @@ const Dashboard = () => {
 		<div className="mt-12 mx-auto space-y-8">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
-				<TransactionSheet initialData={editTransaction} />
+				<TransactionFormModal />
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
