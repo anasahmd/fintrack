@@ -1,6 +1,7 @@
 import {
 	Sheet,
 	SheetContent,
+	SheetDescription,
 	SheetHeader,
 	SheetTitle,
 	SheetTrigger,
@@ -11,7 +12,13 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import TransactionContent from './TransactionContent';
 import { useMediaQuery } from 'usehooks-ts';
-import { Drawer, DrawerContent, DrawerTrigger } from './ui/drawer';
+import {
+	Drawer,
+	DrawerContent,
+	DrawerDescription,
+	DrawerTitle,
+	DrawerTrigger,
+} from './ui/drawer';
 
 const TransactionFormModal = () => {
 	const isDesktop = useMediaQuery('(min-width: 768px)');
@@ -50,6 +57,10 @@ const TransactionFormModal = () => {
 					<SheetContent className="w-full h-full p-4 sm:h-screen sm:w-100 sm:max-w-100 overflow-y-auto">
 						<SheetHeader className="py-2 px-4 text-xl m-2">
 							<SheetTitle>{editId ? 'Edit ' : 'Add '} Transaction</SheetTitle>
+							<SheetDescription className="sr-only">
+								Fill out the form below to {editId ? 'edit your' : 'add a new'}{' '}
+								transaction.
+							</SheetDescription>
 						</SheetHeader>
 						<TransactionContent setIsModalOpen={setIsModalOpen} />
 					</SheetContent>
@@ -60,6 +71,13 @@ const TransactionFormModal = () => {
 						<Button>Add Transaction</Button>
 					</DrawerTrigger>
 					<DrawerContent>
+						<DrawerTitle className="sr-only">
+							{editId ? 'Edit ' : 'Add '} Transaction
+						</DrawerTitle>
+						<DrawerDescription className="sr-only">
+							Fill out the form below to {editId ? 'edit your' : 'add a new'}{' '}
+							transaction.
+						</DrawerDescription>
 						<TransactionContent setIsModalOpen={setIsModalOpen} />
 					</DrawerContent>
 				</Drawer>
