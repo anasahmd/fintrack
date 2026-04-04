@@ -38,85 +38,87 @@ const Login = () => {
 	};
 
 	return (
-		<div className="flex h-screen items-center justify-center ">
-			<section className="flex min-h-screen w-full items-center justify-center py-4 lg:py-20">
-				<div className="w-full max-w-sm space-y-6">
-					<h2 className="mt-6 text-2xl text-start font-bold">
-						Sign in to your account
-					</h2>
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						className="space-y-6"
-						noValidate
-					>
-						<Controller
-							name="email"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Email address</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										type="email"
-										aria-invalid={fieldState.invalid}
-										placeholder="name@example.com"
-										autoComplete="email"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
-						<Controller
-							name="password"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Password</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										type="password"
-										aria-invalid={fieldState.invalid}
-										autoComplete="current-password"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
+		<section className="flex w-full items-center justify-center py-8 text-start">
+			<div className="w-full max-w-sm space-y-6">
+				<h2 className="mt-6 text-3xl font-bold">Welcome back</h2>
+				<p className="mb-8">Please enter your details</p>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					className="space-y-6"
+					noValidate
+				>
+					<Controller
+						name="email"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="fold-medium">
+									Email address
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									type="email"
+									aria-invalid={fieldState.invalid}
+									placeholder="Enter your email"
+									autoComplete="email"
+								/>
+								{fieldState.invalid && (
+									<FieldError errors={[fieldState.error]} />
+								)}
+							</Field>
+						)}
+					/>
+					<Controller
+						name="password"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="font-medium">
+									Password
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									type="password"
+									aria-invalid={fieldState.invalid}
+									autoComplete="current-password"
+									placeholder="Password"
+								/>
+								{fieldState.invalid && (
+									<FieldError errors={[fieldState.error]} />
+								)}
+							</Field>
+						)}
+					/>
 
-						<div className="flex items-center justify-between">
-							<Link to="/forgot-password" className="text-sm hover:underline ">
-								Forgot your password?
-							</Link>
-						</div>
-
-						<div>
-							<Button type="submit" className="w-full cursor-pointer">
-								Signin
-							</Button>
-						</div>
-					</form>
-
-					<div className="space-y-6 lg:mt-10">
-						Don't have an account?{' '}
-						<Link to="/register" className="underline text-primary">
-							Sign Up
+					<div className="flex items-center justify-between">
+						<Link
+							to="/forgot-password"
+							className="text-sm hover:underline font-medium "
+						>
+							Forgot password
 						</Link>
 					</div>
+
+					<div>
+						<Button
+							type="submit"
+							className="w-full cursor-pointer font-medium text-sm"
+						>
+							Login
+						</Button>
+					</div>
+				</form>
+
+				<div className="space-y-6 lg:mt-10 text-center">
+					Don't have an account?{' '}
+					<Link to="/register" className=" text-primary font-medium">
+						Sign Up
+					</Link>
 				</div>
-			</section>
-		</div>
+			</div>
+		</section>
 	);
 };
 

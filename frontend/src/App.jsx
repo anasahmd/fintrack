@@ -20,24 +20,24 @@ function App() {
 		<div>
 			<Toaster position="bottom-center" />
 			<Router>
-				<Routes>
-					<Route
-						path="/"
-						element={user ? <Layout /> : <Navigate to="/login" />}
-					>
-						<Route path="/" element={<Dashboard />} />
-					</Route>
+				<Layout>
+					<Routes>
+						<Route
+							path="/"
+							element={user ? <Dashboard /> : <Navigate to="/login" />}
+						/>
 
-					<Route
-						path="/login"
-						element={user ? <Navigate to="/" replace /> : <Login />}
-					/>
+						<Route
+							path="/login"
+							element={user ? <Navigate to="/" replace /> : <Login />}
+						/>
 
-					<Route
-						path="/register"
-						element={user ? <Navigate to="/" replace /> : <Register />}
-					/>
-				</Routes>
+						<Route
+							path="/register"
+							element={user ? <Navigate to="/" replace /> : <Register />}
+						/>
+					</Routes>
+				</Layout>
 			</Router>
 		</div>
 	);
