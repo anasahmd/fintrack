@@ -46,7 +46,7 @@ const Dashboard = () => {
 	const balance = income - expense;
 
 	return (
-		<div className="p-4 mx-auto space-y-8">
+		<div className="mt-12 mx-auto space-y-8">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
 				<TransactionSheet initialData={editTransaction} />

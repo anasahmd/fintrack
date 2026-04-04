@@ -39,7 +39,7 @@ const Login = () => {
 
 	return (
 		<section className="flex w-full items-center justify-center py-8 text-start">
-			<div className="w-full max-w-sm space-y-6">
+			<div className="w-full max-w-md space-y-6">
 				<h2 className="mt-6 text-3xl font-bold">Welcome back</h2>
 				<p className="mb-8">Please enter your details</p>
 				<form
@@ -52,7 +52,7 @@ const Login = () => {
 						control={form.control}
 						render={({ field, fieldState }) => (
 							<Field data-invalid={fieldState.invalid}>
-								<FieldLabel htmlFor={field.name} className="fold-medium">
+								<FieldLabel htmlFor={field.name} className="font-medium">
 									Email address
 								</FieldLabel>
 								<Input
@@ -111,9 +111,9 @@ const Login = () => {
 					</div>
 				</form>
 
-				<div className="space-y-6 lg:mt-10 text-center">
+				<div className="mt-10 text-center">
 					Don't have an account?{' '}
-					<Link to="/register" className=" text-primary font-medium">
+					<Link to="/register" className="text-primary font-medium">
 						Sign Up
 					</Link>
 				</div>

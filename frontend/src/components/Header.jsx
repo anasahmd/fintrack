@@ -15,8 +15,8 @@ const Header = () => {
 	return (
 		<header
 			className={cn(
-				'bg-background  sticky top-0 z-10 w-full mx-auto px-2 md:px-8 h-16 flex items-center justify-between',
-				user ? 'max-w-6xl' : 'max-w-xl',
+				'bg-background z-10 w-full mx-auto h-12 py-10 flex items-center justify-between border-b',
+				user ? 'max-w-7xl' : 'max-w-xl',
 			)}
 		>
 			<div className="flex items-center gap-2">

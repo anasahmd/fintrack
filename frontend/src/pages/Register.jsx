@@ -41,125 +41,134 @@ const Register = () => {
 	};
 
 	return (
-		<div className="flex h-screen items-center justify-center">
-			<section className="flex w-full items-center justify-center">
-				<div className="w-full max-w-sm space-y-6">
-					<h2 className="text-2xl font-bold text-start">
-						Create a new account
-					</h2>
+		<section className="flex w-full items-center justify-center py-8 text-start">
+			<div className="w-full max-w-md space-y-6">
+				<h2 className="mt-6 text-3xl font-bold">Create an account</h2>
+				<p className="mb-8">Please enter your details to get started</p>
+				<form
+					onSubmit={form.handleSubmit(onSubmit)}
+					noValidate
+					className="space-y-6"
+				>
+					<Controller
+						name="name"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="font-medium">
+									Full Name
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									aria-invalid={fieldState.invalid}
+									placeholder="Enter your name"
+									autoComplete="name"
+								/>
+								{fieldState.invalid && (
+									<FieldError
+										className="text-start"
+										errors={[fieldState.error]}
+									/>
+								)}
+							</Field>
+						)}
+					/>
 
-					<form
-						onSubmit={form.handleSubmit(onSubmit)}
-						noValidate
-						className="space-y-6"
+					<Controller
+						name="email"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="font-medium">
+									Email address
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									type="email"
+									aria-invalid={fieldState.invalid}
+									placeholder="Enter your email"
+									autoComplete="email"
+								/>
+								{fieldState.invalid && (
+									<FieldError
+										className="text-start"
+										errors={[fieldState.error]}
+									/>
+								)}
+							</Field>
+						)}
+					/>
+
+					<Controller
+						name="password"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="font-medium">
+									Password
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									type="password"
+									aria-invalid={fieldState.invalid}
+									autoComplete="new-password"
+									placeholder="Password"
+								/>
+								{fieldState.invalid && (
+									<FieldError
+										className="text-start"
+										errors={[fieldState.error]}
+									/>
+								)}
+							</Field>
+						)}
+					/>
+
+					<Controller
+						name="confirmPassword"
+						control={form.control}
+						render={({ field, fieldState }) => (
+							<Field data-invalid={fieldState.invalid}>
+								<FieldLabel htmlFor={field.name} className="font-medium">
+									Confirm Password
+								</FieldLabel>
+								<Input
+									{...field}
+									id={field.name}
+									type="password"
+									aria-invalid={fieldState.invalid}
+									autoComplete="new-password"
+									placeholder="Password"
+								/>
+								{fieldState.invalid && (
+									<FieldError
+										className="text-start"
+										errors={[fieldState.error]}
+									/>
+								)}
+							</Field>
+						)}
+					/>
+
+					<Button
+						type="submit"
+						className="w-full mt-4 cursor-pointer font-medium text-sm"
 					>
-						<Controller
-							name="name"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Full Name</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										aria-invalid={fieldState.invalid}
-										placeholder="John Doe"
-										autoComplete="name"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
+						Signup
+					</Button>
+				</form>
 
-						<Controller
-							name="email"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Email address</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										type="email"
-										aria-invalid={fieldState.invalid}
-										placeholder="name@example.com"
-										autoComplete="email"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
-
-						<Controller
-							name="password"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Password</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										type="password"
-										aria-invalid={fieldState.invalid}
-										autoComplete="new-password"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
-
-						<Controller
-							name="confirmPassword"
-							control={form.control}
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor={field.name}>Confirm Password</FieldLabel>
-									<Input
-										{...field}
-										id={field.name}
-										type="password"
-										aria-invalid={fieldState.invalid}
-										autoComplete="new-password"
-									/>
-									{fieldState.invalid && (
-										<FieldError
-											className="text-start"
-											errors={[fieldState.error]}
-										/>
-									)}
-								</Field>
-							)}
-						/>
-
-						<Button type="submit" className="w-full">
-							Signup
-						</Button>
-					</form>
-
-					<div className="space-y-6 lg:mt-10">
-						Already have an account?{' '}
-						<Link to="/login" className="underline text-primary">
-							Sign In
-						</Link>
-					</div>
+				<div className="mt-10 text-center">
+					Already have an account?{' '}
+					<Link to="/login" className="text-primary font-medium">
+						Sign In
+					</Link>
 				</div>
-			</section>
-		</div>
+			</div>
+		</section>
 	);
 };
 
