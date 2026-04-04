@@ -28,11 +28,11 @@ const TransactionContent = ({ setIsModalOpen }) => {
 
 	return (
 		<Tabs
-			className="pt-0 overflow-y-auto no-scrollbar mt-6 md:mt-0"
+			className="pt-0 overflow-y-auto no-scrollbar mt-6 md:mt-0 pb-6"
 			value={activeTab}
 			onValueChange={setActiveTab}
 		>
-			<TabsList variant="line" className="sticky top-0 z-10 bg-background py-2">
+			<TabsList className="sticky top-0 z-10 w-full">
 				<TabsTrigger value="Expense" className="cursor-pointer">
 					Expense
 				</TabsTrigger>
@@ -41,14 +41,14 @@ const TransactionContent = ({ setIsModalOpen }) => {
 				</TabsTrigger>
 			</TabsList>
 
-			<TabsContent value="Expense">
+			<TabsContent value="Expense" className="px-1">
 				<TransactionForm
 					type="Expense"
 					initialData={editTransactionData}
 					setIsModalOpen={setIsModalOpen}
 				/>
 			</TabsContent>
-			<TabsContent value="Income">
+			<TabsContent value="Income" className="px-1">
 				<TransactionForm
 					type="Income"
 					initialData={editTransactionData}

@@ -54,9 +54,11 @@ const TransactionFormModal = () => {
 							Add Transaction
 						</Button>
 					</SheetTrigger>
-					<SheetContent className="w-full h-full p-4 sm:h-screen sm:w-100 sm:max-w-100 overflow-y-auto">
-						<SheetHeader className="py-2 px-4 text-xl m-2">
-							<SheetTitle>{editId ? 'Edit ' : 'Add '} Transaction</SheetTitle>
+					<SheetContent className="p-4">
+						<SheetHeader className="px-0">
+							<SheetTitle className="text-xl">
+								{editId ? 'Edit ' : 'Add '} Transaction
+							</SheetTitle>
 							<SheetDescription className="sr-only">
 								Fill out the form below to {editId ? 'edit your' : 'add a new'}{' '}
 								transaction.
@@ -68,9 +70,11 @@ const TransactionFormModal = () => {
 			) : (
 				<Drawer open={isModalOpen} onOpenChange={handleOpenChange}>
 					<DrawerTrigger asChild>
-						<Button>Add Transaction</Button>
+						<Button className="cursor-pointer bg-primary text-primary-foreground">
+							Add Transaction
+						</Button>
 					</DrawerTrigger>
-					<DrawerContent>
+					<DrawerContent className="p-4">
 						<DrawerTitle className="sr-only">
 							{editId ? 'Edit ' : 'Add '} Transaction
 						</DrawerTitle>

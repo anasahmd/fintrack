@@ -142,7 +142,7 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 	};
 
 	return (
-		<div className="grid gap-6 px-4 pb-12 md:pb-8 overflow-y-auto">
+		<div className="grid gap-6">
 			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 mt-6">
 				<Controller
 					name="title"
