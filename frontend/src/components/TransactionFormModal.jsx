@@ -36,9 +36,15 @@ const TransactionFormModal = () => {
 	const handleOpenChange = (newOpenState) => {
 		setIsModalOpen(newOpenState);
 
+		// Removes the query parameter on closing the edit form
 		if (!newOpenState && searchParams.get('editTransaction')) {
-			searchParams.delete('editTransaction');
-			setSearchParams(searchParams);
+			setSearchParams(
+				(prevParams) => {
+					prevParams.delete('editTransaction');
+					return prevParams;
+				},
+				{ replace: true },
+			);
 		}
 	};
 

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import {
 	Card,
-	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
@@ -11,7 +10,6 @@ import TransactionChart from '@/components/TransactionChart';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
 import { formatCompactCurrency, formatCurrency } from '@/utils/formatCurrency';
-import { useSearchParams } from 'react-router-dom';
 import TransactionFormModal from '@/components/TransactionFormModal';
 
 const Dashboard = () => {

@@ -49,11 +49,13 @@ import {
 	AlertDialogTrigger,
 } from './ui/alert-dialog';
 import { CURRENCY_OPTIONS } from '@/utils/constants';
+import { useSearchParams } from 'react-router-dom';
 
 const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 	const dispatch = useDispatch();
 	const { items: categories } = useSelector((state) => state.categories);
 	const { user } = useSelector((state) => state.auth);
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	const [open, setOpen] = useState(false);
 
@@ -113,10 +115,17 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 				await dispatch(
 					editTransaction({ id: initialData.id, apiPayload }),
 				).unwrap();
-				toast.success('Transaction edited!');
+				toast.success('Transaction edited');
+				setSearchParams(
+					(prevParams) => {
+						prevParams.delete('editTransaction');
+						return prevParams;
+					},
+					{ replace: true },
+				);
 			} else {
 				await dispatch(addTransaction(apiPayload)).unwrap();
-				toast.success('Transaction saved!');
+				toast.success('Transaction saved');
 			}
 
 			setIsModalOpen(false);

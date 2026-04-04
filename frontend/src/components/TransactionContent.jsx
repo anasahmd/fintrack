@@ -19,12 +19,30 @@ const TransactionContent = ({ setIsModalOpen }) => {
 	);
 
 	useEffect(() => {
+		if (transactions.length > 0 && editId && !editTransactionData) {
+			setSearchParams(
+				(prevParams) => {
+					prevParams.delete('editTransaction');
+					return prevParams;
+				},
+				{ replace: true },
+			);
+			setIsModalOpen(false);
+			return;
+		}
+
 		if (editTransactionData) {
 			setActiveTab(editTransactionData.type);
 		} else {
 			setActiveTab('Expense');
 		}
-	}, [editTransactionData]);
+	}, [
+		editId,
+		editTransactionData,
+		transactions.length,
+		setSearchParams,
+		setIsModalOpen,
+	]);
 
 	return (
 		<Tabs
