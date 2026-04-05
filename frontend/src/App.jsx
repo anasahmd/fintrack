@@ -12,12 +12,13 @@ import { Toaster } from 'sonner';
 import Layout from './components/Layout';
 import { useSelector } from 'react-redux';
 import Register from './pages/Register';
+import { ThemeProvider } from './components/ThemeProvider';
 
 function App() {
 	const { user } = useSelector((state) => state.auth);
 
 	return (
-		<div>
+		<ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
 			<Toaster position="bottom-center" />
 			<Router>
 				<Layout>
@@ -39,7 +40,7 @@ function App() {
 					</Routes>
 				</Layout>
 			</Router>
-		</div>
+		</ThemeProvider>
 	);
 }
 

@@ -53,12 +53,7 @@ const TransactionFormModal = () => {
 			{isDesktop ? (
 				<Sheet open={isModalOpen} onOpenChange={handleOpenChange}>
 					<SheetTrigger asChild>
-						<Button
-							variant="outline"
-							className="cursor-pointer bg-primary text-primary-foreground"
-						>
-							Add Transaction
-						</Button>
+						<Button className="cursor-pointer">Add Transaction</Button>
 					</SheetTrigger>
 					<SheetContent className="p-4">
 						<SheetHeader className="px-0">
@@ -76,9 +71,7 @@ const TransactionFormModal = () => {
 			) : (
 				<Drawer open={isModalOpen} onOpenChange={handleOpenChange}>
 					<DrawerTrigger asChild>
-						<Button className="cursor-pointer bg-primary text-primary-foreground">
-							Add Transaction
-						</Button>
+						<Button className="cursor-pointer">Add Transaction</Button>
 					</DrawerTrigger>
 					<DrawerContent className="p-4">
 						<DrawerTitle className="sr-only">
