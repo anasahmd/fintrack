@@ -1,10 +1,16 @@
-import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
-
+import {
+	Area,
+	AreaChart,
+	CartesianGrid,
+	Line,
+	XAxis,
+	LineChart,
+	YAxis,
+} from 'recharts';
 import {
 	Card,
 	CardContent,
 	CardDescription,
-	CardFooter,
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
@@ -13,6 +19,9 @@ import {
 	ChartTooltip,
 	ChartTooltipContent,
 } from '@/components/ui/chart';
+import { useDateFilter } from '@/hooks/useDateFilter';
+import { useSelector } from 'react-redux';
+import { formatCompactCurrency } from '@/utils/formatCurrency';
 
 const chartConfig = {
 	balance: {
@@ -21,30 +30,29 @@ const chartConfig = {
 	},
 };
 
-const TransactionChart = ({
-	transactions,
-	month = new Date().getMonth(),
-	year = new Date().getFullYear(),
-}) => {
+const TransactionChart = ({ transactions, startingBalance = 0 }) => {
+	const { user } = useSelector((state) => state.auth);
+
+	const { from, to } = useDateFilter();
+
 	if (!transactions || transactions.length === 0) {
 		return (
 			<Card className="flex h-87.5 items-center justify-center border-dashed">
-				<p className="text-zinc-500">No transaction data available.</p>
+				<p className="">No transaction data available.</p>
 			</Card>
 		);
 	}
 
 	const now = new Date();
+	const todayAtMidnight = new Date(
+		now.getFullYear(),
+		now.getMonth(),
+		now.getDate(),
+	);
 
-	const isCurrentMonth = year === now.getFullYear() && month === now.getMonth();
+	const chartEndDate = to > todayAtMidnight ? todayAtMidnight : to;
 
-	const startOfMonth = new Date(year, month, 1);
-
-	// Only generate the date till now if it's current month
-	const endOfMonth = isCurrentMonth
-		? new Date(now.getFullYear(), now.getMonth(), now.getDate())
-		: new Date(year, month + 1, 0);
-
+	// Group transactions by date
 	const transactionsByDate = {};
 	transactions.forEach((t) => {
 		const dateStr = new Date(t.date).toLocaleDateString('en-US');
@@ -55,13 +63,10 @@ const TransactionChart = ({
 	});
 
 	const chartData = [];
-	let runningBalance = 0;
 
-	for (
-		let d = new Date(startOfMonth);
-		d <= endOfMonth;
-		d.setDate(d.getDate() + 1)
-	) {
+	let runningBalance = startingBalance;
+
+	for (let d = new Date(from); d <= chartEndDate; d.setDate(d.getDate() + 1)) {
 		const dateStr = d.toLocaleDateString('en-US');
 
 		if (transactionsByDate[dateStr]) {
@@ -79,16 +84,8 @@ const TransactionChart = ({
 		});
 	}
 
-	const xAxisTicks = [];
-	for (let i = 1; i <= endOfMonth.getDate(); i += 7) {
-		const tickDate = new Date(year, month, i);
-		xAxisTicks.push(
-			tickDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-		);
-	}
-
 	return (
-		<Card className="@container/card">
+		<Card>
 			<CardHeader>
 				<CardTitle>Balance Overview</CardTitle>
 				<CardDescription>Your cumulative cash flow over time</CardDescription>
@@ -96,50 +93,58 @@ const TransactionChart = ({
 			<CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
 				<ChartContainer
 					config={chartConfig}
-					className="aspect-auto h-62.5 w-full"
+					className="aspect-auto h-[250px] w-full"
 				>
 					<AreaChart
 						data={chartData}
-						margin={{
-							left: 12,
-							right: 12,
-							top: 12,
-							bottom: 12,
-						}}
+						margin={{ left: 12, right: 12, top: 12, bottom: 20 }}
 					>
+						{/* 1. Define the smooth fading gradient */}
 						<defs>
-							<linearGradient id="fillBalance" x1="0" y1="0" x2="0" y2="1">
+							<linearGradient id="colorBalance" x1="0" y1="0" x2="0" y2="1">
 								<stop
 									offset="5%"
 									stopColor="var(--color-balance)"
-									stopOpacity={1.0}
+									stopOpacity={0.4}
 								/>
 								<stop
 									offset="95%"
 									stopColor="var(--color-balance)"
-									stopOpacity={0.1}
+									stopOpacity={0}
 								/>
 							</linearGradient>
 						</defs>
+
 						<CartesianGrid vertical={false} />
-						<XAxis
-							dataKey="date"
-							tickLine={false}
+						<XAxis dataKey="date" hide />
+						<YAxis
 							axisLine={false}
+							tickLine={false}
 							tickMargin={8}
-							ticks={xAxisTicks}
-							interval="preserveStartEnd"
+							tickFormatter={(value) =>
+								formatCompactCurrency(value, user.currency)
+							}
 						/>
 						<ChartTooltip
 							cursor={false}
 							content={<ChartTooltipContent indicator="dot" />}
 						/>
+
+						{/* 2. Use Area, link the gradient, and hide the static dots! */}
 						<Area
+							type="monotone"
 							dataKey="balance"
-							type="natural"
-							fill="url(#fillBalance)"
 							stroke="var(--color-balance)"
-							stackId="a"
+							strokeWidth={2}
+							fillOpacity={1}
+							fill="url(#colorBalance)" // Links to the <defs> id above
+							dot={false} // HIDES THE STATIC DOTS
+							activeDot={{
+								stroke: 'var(--background)',
+								strokeWidth: 2,
+								r: 6,
+								fill: 'var(--color-balance)',
+							}}
 						/>
 					</AreaChart>
 				</ChartContainer>

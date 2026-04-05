@@ -3,8 +3,8 @@ import transactionService from '@/services/transactions';
 
 export const fetchTransactions = createAsyncThunk(
 	'transactions/fetchAll',
-	async () => {
-		return await transactionService.getAllTransactions();
+	async ({ from, to }) => {
+		return await transactionService.getAllTransactions({ from, to });
 	},
 );
 
@@ -34,14 +34,26 @@ export const transactionSlice = createSlice({
 
 	initialState: {
 		items: [],
+		startingBalance: 0,
+		isLoading: true,
+		error: null,
 	},
 
 	reducers: {},
 
 	extraReducers: (builder) => {
 		builder
+			.addCase(fetchTransactions.pending, (state) => {
+				state.isLoading = true;
+			})
 			.addCase(fetchTransactions.fulfilled, (state, action) => {
-				state.items = action.payload;
+				state.isLoading = false;
+				state.items = action.payload.transactions;
+				state.startingBalance = action.payload.startingBalance;
+			})
+			.addCase(fetchTransactions.rejected, (state, action) => {
+				state.isLoading = false;
+				state.error = action.error.message;
 			})
 			.addCase(addTransaction.fulfilled, (state, action) => {
 				state.items.push(action.payload);

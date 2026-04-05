@@ -2,9 +2,39 @@ import { api } from './api';
 
 const endpoint = '/transactions';
 
-const getAllTransactions = async () => {
+export const getAllTransactions = async ({ from, to }) => {
 	const response = await api.get(endpoint);
-	return response.data;
+	const allTransactions = response.data;
+
+	const fromDate = new Date(from);
+
+	const toDate = new Date(to);
+	toDate.setHours(23, 59, 59, 999);
+
+	const startingBalance = allTransactions.reduce((acc, transaction) => {
+		const transactionDate = new Date(transaction.date);
+
+		if (transactionDate < fromDate) {
+			return (
+				acc +
+				(transaction.type === 'Income'
+					? transaction.amount
+					: -transaction.amount)
+			);
+		}
+		return acc;
+	}, 0);
+
+	const rangeTransactions = allTransactions.filter((transaction) => {
+		const transactionDate = new Date(transaction.date);
+
+		return transactionDate >= fromDate && transactionDate <= toDate;
+	});
+
+	return {
+		transactions: rangeTransactions,
+		startingBalance: startingBalance,
+	};
 };
 
 const createTransaction = async (payload) => {

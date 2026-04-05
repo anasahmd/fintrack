@@ -11,20 +11,47 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/transactionSlice';
 import { formatCompactCurrency, formatCurrency } from '@/utils/formatCurrency';
 import TransactionFormModal from '@/components/TransactionFormModal';
+import { useDateFilter } from '@/hooks/useDateFilter';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuGroup,
+	DropdownMenuLabel,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { ChevronDown } from 'lucide-react';
+
+const DATE_RANGE_LABELS = {
+	thisMonth: 'This Month',
+	lastMonth: 'Last Month',
+	last6Months: 'Last 6 Months',
+	thisYear: 'This Year',
+};
 
 const Dashboard = () => {
 	const dispatch = useDispatch();
-
 	const { user } = useSelector((state) => state.auth);
+	const [dateRange, setDateRange] = useState('thisMonth');
 
-	const [viewMonth, setViewMonth] = useState(new Date().getMonth());
-	const [viewYear, setViewYear] = useState(new Date().getFullYear());
-
-	const { items: transactions } = useSelector((state) => state.transactions);
+	const { from, to, setPreset } = useDateFilter();
 
 	useEffect(() => {
-		dispatch(fetchTransactions());
-	}, [dispatch]);
+		setPreset(dateRange);
+	}, [dateRange]);
+
+	const fromString = from.toISOString();
+	const toString = to.toISOString();
+
+	useEffect(() => {
+		dispatch(fetchTransactions({ from: fromString, to: toString }));
+	}, [fromString, toString, dispatch]);
+
+	const { items: transactions, startingBalance } = useSelector(
+		(state) => state.transactions,
+	);
 
 	const income = transactions
 		.filter((t) => t.type === 'Income')
@@ -34,13 +61,44 @@ const Dashboard = () => {
 		.filter((t) => t.type === 'Expense')
 		.reduce((acc, t) => acc + Math.abs(t.amount), 0);
 
-	const balance = income - expense;
+	const balance = startingBalance + income - expense;
 
 	return (
 		<div className="mt-12 mx-auto space-y-8">
 			<div className="flex justify-between items-center">
-				<h1 className="text-2xl font-bold">Hey, {user.name}! 👋</h1>
-				<TransactionFormModal />
+				<h1 className="text-2xl font-bold">Hey, {user?.name}! 👋</h1>
+				<div className="flex gap-4">
+					<TransactionFormModal />
+					<DropdownMenu className="cursor-pointer">
+						<DropdownMenuTrigger asChild>
+							<Button variant="outline" className="cursor-pointer">
+								{DATE_RANGE_LABELS[dateRange]}
+								<ChevronDown />
+							</Button>
+						</DropdownMenuTrigger>
+						<DropdownMenuContent className="w-42">
+							<DropdownMenuGroup>
+								<DropdownMenuRadioGroup
+									value={dateRange}
+									onValueChange={setDateRange}
+								>
+									<DropdownMenuRadioItem value="thisMonth">
+										This Month
+									</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="lastMonth">
+										Last Month
+									</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="last6Months">
+										Last 6 Months
+									</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value="thisYear">
+										This Year
+									</DropdownMenuRadioItem>
+								</DropdownMenuRadioGroup>
+							</DropdownMenuGroup>
+						</DropdownMenuContent>
+					</DropdownMenu>
+				</div>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -48,7 +106,7 @@ const Dashboard = () => {
 					<CardHeader>
 						<CardDescription>Total Balance</CardDescription>
 						<CardTitle className="text-2xl font-semibold">
-							{formatCurrency(balance, user.currency)}
+							{formatCurrency(balance, user?.currency)}
 						</CardTitle>
 					</CardHeader>
 				</Card>
@@ -56,7 +114,7 @@ const Dashboard = () => {
 					<CardHeader>
 						<CardDescription>Total Income</CardDescription>
 						<CardTitle className="text-2xl font-semibold">
-							{formatCurrency(income, user.currency)}
+							{formatCurrency(income, user?.currency)}
 						</CardTitle>
 					</CardHeader>
 				</Card>
@@ -64,7 +122,7 @@ const Dashboard = () => {
 					<CardHeader>
 						<CardDescription>Total Expense</CardDescription>
 						<CardTitle className="text-2xl font-semibold">
-							{formatCurrency(expense, user.currency)}
+							{formatCurrency(expense, user?.currency)}
 						</CardTitle>
 					</CardHeader>
 				</Card>
@@ -74,8 +132,7 @@ const Dashboard = () => {
 				<div className="lg:col-span-3">
 					<TransactionChart
 						transactions={transactions}
-						month={viewMonth}
-						year={viewYear}
+						startingBalance={startingBalance}
 					/>
 				</div>
 

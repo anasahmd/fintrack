@@ -26,9 +26,6 @@ const Header = () => {
 
 			{user ? (
 				<div className="flex items-center gap-4">
-					<span className="text-sm font-medium hidden sm:block">
-						{user.name}
-					</span>
 					<Button
 						variant="outline"
 						size="sm"

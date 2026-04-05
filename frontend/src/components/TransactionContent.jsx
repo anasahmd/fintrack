@@ -19,6 +19,8 @@ const TransactionContent = ({ setIsModalOpen }) => {
 	);
 
 	useEffect(() => {
+		// !!! Update the check condition to isLoading from transaction state
+		// Until any transaction is loaded, it won't run
 		if (transactions.length > 0 && editId && !editTransactionData) {
 			setSearchParams(
 				(prevParams) => {
