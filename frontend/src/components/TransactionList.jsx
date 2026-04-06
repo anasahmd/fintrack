@@ -26,14 +26,17 @@ const TransactionList = ({ transactions }) => {
 					{transactions.map((transaction, index) => (
 						<div
 							key={transaction.id}
-							className="flex border-accent border-2 p-4 rounded-xl gap-4 items-center mb-3 cursor-pointer"
+							className="flex border-accent border-2 p-4 rounded-xl gap-3 items-center mb-3 cursor-pointer"
 							onClick={() =>
 								setSearchParams({ editTransaction: transaction.id })
 							}
 						>
-							<div className="text-lg">{transaction.category.emoji}</div>
-							<div className="flex flex-col items-start gap-1 text-secondary-foreground">
-								<p className="text-base font-semibold">
+							<div className="text-lg shrink-0">
+								{transaction.category.emoji}
+							</div>
+
+							<div className="flex flex-col items-start gap-1 text-start text-secondary-foreground flex-1 min-w-0">
+								<p className="text-base font-semibold truncate w-full">
 									{transaction.title
 										? transaction.title
 										: transaction.category.name}
@@ -42,7 +45,8 @@ const TransactionList = ({ transactions }) => {
 									{formatTransactionDate(transaction.date, 'dd MMM, hh:mm a')}
 								</p>
 							</div>
-							<div className="text-sm font-semibold ms-auto">
+
+							<div className="text-sm font-semibold text-right shrink-0">
 								{transaction.type === 'Income' ? (
 									<div className="text-success">
 										+

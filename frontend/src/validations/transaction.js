@@ -12,7 +12,8 @@ export const transactionFormSchema = z.object({
 			error: (issue) =>
 				!issue.input ? 'Amount is required' : 'Amount must be a valid number',
 		})
-		.positive({ error: 'Amount must be greater than 0' }),
+		.positive({ error: 'Amount must be greater than 0' })
+		.max(1000000000, 'Amount exceeds the maximum allowed transaction size'),
 
 	type: z.enum(['Income', 'Expense'], {
 		error: (issue) =>

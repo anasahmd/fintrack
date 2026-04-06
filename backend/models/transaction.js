@@ -23,6 +23,8 @@ const transactionSchema = mongoose.Schema(
 		amount: {
 			type: Number,
 			required: [true, 'Amount is required'],
+			min: [1, 'Amount must be at least 1'],
+			max: [1000000000, 'Amount cannot exceed ₹1,000,000,000'],
 		},
 		// 	exchangeRate: { type: Number, default: 1 },
 		// baseCurrencySnapshot: { type: String, required: [true, 'Base currency is required'] },

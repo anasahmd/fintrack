@@ -8,9 +8,11 @@ const transactionSchema = Joi.object({
 		'string.max': 'Title cannot be longer than 30 characters',
 	}),
 
-	amount: Joi.number().required().messages({
+	amount: Joi.number().positive().max(1000000000).required().messages({
 		'number.base': 'Amount must be a number',
 		'any.required': 'Amount is required',
+		'number.positive': 'Amount must be greater than 0.',
+		'number.max': 'Amount exceeds the maximum allowed transaction size.',
 	}),
 
 	currency: Joi.string()

@@ -42,7 +42,7 @@ const Header = () => {
 		<header
 			className={cn(
 				'bg-background z-10 w-full mx-auto h-12 py-10 flex items-center justify-between border-b',
-				user ? 'max-w-7xl' : 'max-w-xl',
+				user ? 'max-w-7xl' : 'max-w-2xl',
 			)}
 		>
 			<div className="flex items-center gap-2">
