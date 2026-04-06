@@ -20,52 +20,57 @@ const DEFAULT_CATEGORIES = [
 	{ name: 'Other', type: 'Expense', emoji: '🛍️' },
 ];
 
-const register = async (request, response, next) => {
+const register = async (request, response) => {
 	const { name, email, password } = request.body;
 
 	try {
-		try {
-			await registerSchema.validateAsync({ name, email, password });
-		} catch (e) {
-			return response.status(400).json({ error: e.details[0].message });
-		}
-
-		const existingUser = await User.findOne({ email });
-
-		if (existingUser) {
-			return response
-				.status(400)
-				.json({ error: 'An account with this email already exists' });
-		}
-
-		const saltRounds = 10;
-		const passwordHash = await bcrypt.hash(password, saltRounds);
-
-		const newUser = new User({
-			name,
-			email,
-			passwordHash,
-		});
-
-		const savedUser = await newUser.save();
-		const categoriesToInsert = DEFAULT_CATEGORIES.map((cat) => ({
-			...cat,
-			user: savedUser._id,
-		}));
-
-		await Category.insertMany(categoriesToInsert);
-		response.status(201).json({
-			id: savedUser._id,
-			name: savedUser.name,
-			email: savedUser.email,
-			currency: savedUser.currency,
-		});
+		await registerSchema.validateAsync({ name, email, password });
 	} catch (e) {
-		next(e);
+		return response.status(400).json({ error: e.details[0].message });
 	}
+
+	const existingUser = await User.findOne({ email });
+
+	if (existingUser) {
+		return response
+			.status(400)
+			.json({ error: 'An account with this email already exists' });
+	}
+
+	const saltRounds = 10;
+	const passwordHash = await bcrypt.hash(password, saltRounds);
+
+	const newUser = new User({
+		name,
+		email,
+		passwordHash,
+	});
+
+	const savedUser = await newUser.save();
+	const categoriesToInsert = DEFAULT_CATEGORIES.map((cat) => ({
+		...cat,
+		user: savedUser._id,
+	}));
+
+	await Category.insertMany(categoriesToInsert);
+
+	const userForToken = {
+		email: savedUser.email,
+		id: savedUser._id,
+	};
+
+	const token = jwt.sign(userForToken, config.JWT_SECRET);
+
+	response.status(201).json({
+		token,
+		id: savedUser._id,
+		name: savedUser.name,
+		email: savedUser.email,
+		currency: savedUser.currency,
+	});
 };
 
-const login = async (request, response, next) => {
+const login = async (request, response) => {
 	const { email, password } = request.body;
 
 	try {
