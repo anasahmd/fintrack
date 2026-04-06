@@ -50,6 +50,7 @@ import {
 } from './ui/alert-dialog';
 import { CURRENCY_OPTIONS } from '@/utils/constants';
 import { useSearchParams } from 'react-router-dom';
+import Emoji from './Emoji';
 
 const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 	const dispatch = useDispatch();
@@ -267,7 +268,9 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 								<SelectContent position="item-aligned">
 									{filteredCategories.map((cat) => (
 										<SelectItem key={cat.id} value={cat.id}>
-											<span className="mr-2">{cat.emoji}</span>
+											<span className="mr-2">
+												<Emoji text={cat.emoji} />
+											</span>
 											{cat.name}
 										</SelectItem>
 									))}

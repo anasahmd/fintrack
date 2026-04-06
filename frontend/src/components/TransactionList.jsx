@@ -9,6 +9,7 @@ import { formatTransactionDate } from '@/utils/date';
 import { formatCompactCurrency } from '@/utils/formatCurrency';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
+import Emoji from './Emoji';
 
 const TransactionList = ({ transactions }) => {
 	const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +33,7 @@ const TransactionList = ({ transactions }) => {
 							}
 						>
 							<div className="text-lg shrink-0">
-								{transaction.category.emoji}
+								<Emoji text={transaction.category.emoji} />
 							</div>
 
 							<div className="flex flex-col items-start gap-1 text-start text-secondary-foreground flex-1 min-w-0">

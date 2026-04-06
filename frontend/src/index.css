@@ -181,3 +181,11 @@ input:-webkit-autofill:active {
 	-webkit-text-fill-color: var(--foreground) !important;
 	transition: background-color 5000s ease-in-out 0s;
 }
+
+/* Style for twemoji */
+img.emoji {
+	height: 1em;
+	width: 1em;
+	margin: 0 0.05em 0 0.1em;
+	vertical-align: -0.1em;
+}
