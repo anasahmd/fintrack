@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
+import { IncomeDonutchart } from '@/components/IncomeDonutChart';
 
 const DATE_RANGE_LABELS = {
 	thisMonth: 'This Month',
@@ -64,7 +65,7 @@ const Dashboard = () => {
 	const balance = startingBalance + income - expense;
 
 	return (
-		<div className="mt-12 mx-auto space-y-8">
+		<div className="my-12 mx-auto space-y-8">
 			<div className="flex justify-between items-center">
 				<h1 className="text-2xl font-bold">Hey, {user?.name}! 👋</h1>
 				<div className="flex gap-4">
@@ -129,11 +130,12 @@ const Dashboard = () => {
 			</div>
 
 			<div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-				<div className="lg:col-span-3">
+				<div className="lg:col-span-3 flex gap-8 flex-col">
 					<TransactionChart
 						transactions={transactions}
 						startingBalance={startingBalance}
 					/>
+					{/* <IncomeDonutchart /> */}
 				</div>
 
 				<div className="lg:col-span-2">

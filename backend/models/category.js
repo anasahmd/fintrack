@@ -21,6 +21,22 @@ const categorySchema = mongoose.Schema(
 			type: String,
 			default: '🏷️',
 		},
+		color: {
+			type: String,
+			enum: [
+				'red',
+				'peach',
+				'yellow',
+				'green',
+				'teal',
+				'sky',
+				'mauve',
+				'pink',
+				'lavender',
+				'blue',
+			],
+			default: 'sky',
+		},
 	},
 	{ timestamps: true },
 );

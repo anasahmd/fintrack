@@ -6,18 +6,46 @@ const jwt = require('jsonwebtoken');
 const { registerSchema, loginSchema } = require('../validations/auth');
 
 const DEFAULT_CATEGORIES = [
-	// Income
-	{ name: 'Salary', type: 'Income', emoji: '💰' },
-	{ name: 'Freelance', type: 'Income', emoji: '💻' },
-	{ name: 'Investments', type: 'Income', emoji: '📈' },
+	// --- INCOME ---
+	{ name: 'Salary', type: 'Income', emoji: '💰', color: 'green' },
+	{ name: 'Freelance', type: 'Income', emoji: '💻', color: 'sky' },
+	{ name: 'Investments', type: 'Income', emoji: '📈', color: 'blue' },
+	{
+		name: 'Gifts & Refunds',
+		type: 'Income',
+		emoji: '🎁',
+		color: 'lavender',
+	},
 
-	// Expenses
-	{ name: 'Housing', type: 'Expense', emoji: '🏠' },
-	{ name: 'Food', type: 'Expense', emoji: '🍔' },
-	{ name: 'Transportation', type: 'Expense', emoji: '🚗' },
-	{ name: 'Utilities', type: 'Expense', emoji: '⚡' },
-	{ name: 'Health', type: 'Expense', emoji: '🏥' },
-	{ name: 'Other', type: 'Expense', emoji: '🛍️' },
+	// --- EXPENSES ---
+	// The Essentials
+	{ name: 'Housing', type: 'Expense', emoji: '🏠', color: 'mauve' },
+	{ name: 'Food & Dining', type: 'Expense', emoji: '🍔', color: 'peach' },
+	{ name: 'Utilities', type: 'Expense', emoji: '⚡', color: 'sky' },
+	{
+		name: 'Transportation',
+		type: 'Expense',
+		emoji: '🚗',
+		color: 'yellow',
+	},
+	{ name: 'Health', type: 'Expense', emoji: '🏥', color: 'teal' },
+
+	// Lifestyle & Discretionary
+	{ name: 'Shopping', type: 'Expense', emoji: '🛍️', color: 'pink' },
+	{
+		name: 'Entertainment',
+		type: 'Expense',
+		emoji: '🍿',
+		color: 'lavender',
+	},
+	{ name: 'Personal Care', type: 'Expense', emoji: '💈', color: 'peach' },
+	{ name: 'Education', type: 'Expense', emoji: '📚', color: 'blue' },
+
+	// Financial
+	{ name: 'Debt & Loans', type: 'Expense', emoji: '💳', color: 'red' },
+
+	// The Catch-All
+	{ name: 'Miscellaneous', type: 'Expense', emoji: '✨', color: 'mauve' },
 ];
 
 const register = async (request, response) => {

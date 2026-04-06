@@ -1,12 +1,4 @@
-import {
-	Area,
-	AreaChart,
-	CartesianGrid,
-	Line,
-	XAxis,
-	LineChart,
-	YAxis,
-} from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
 	Card,
 	CardContent,
@@ -93,7 +85,7 @@ const TransactionChart = ({ transactions, startingBalance = 0 }) => {
 			<CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
 				<ChartContainer
 					config={chartConfig}
-					className="aspect-auto h-[250px] w-full"
+					className="aspect-auto h-62.5 w-full"
 				>
 					<AreaChart
 						data={chartData}
