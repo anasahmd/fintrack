@@ -1,47 +1,40 @@
 const mongoose = require('mongoose');
+const { CATEGORY_COLORS } = require('../utils/constants');
 
 const categorySchema = mongoose.Schema(
 	{
 		user: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
-			required: [true, 'User Id is required'],
+			required: true,
 		},
 		name: {
 			type: String,
-			required: [true, 'Name is required'],
+			required: true,
 			trim: true,
 		},
 		type: {
 			type: String,
 			enum: ['Income', 'Expense'],
-			required: [true, 'Type is required'],
+			required: true,
 		},
 		emoji: {
 			type: String,
-			default: '🏷️',
+			required: true,
 		},
 		color: {
 			type: String,
-			enum: [
-				'red',
-				'peach',
-				'yellow',
-				'green',
-				'teal',
-				'sky',
-				'mauve',
-				'pink',
-				'lavender',
-				'blue',
-			],
-			default: 'sky',
+			required: true,
+			enum: CATEGORY_COLORS,
 		},
 	},
 	{ timestamps: true },
 );
 
-categorySchema.index({ user: 1, name: 1, type: 1 }, { unique: true });
+categorySchema.index(
+	{ user: 1, name: 1, type: 1 },
+	{ unique: true, collation: { locale: 'en', strength: 2 } },
+);
 
 categorySchema.set('toJSON', {
 	transform: (document, returnedObject) => {

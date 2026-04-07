@@ -1,11 +1,35 @@
-const accountSchema = new mongoose.Schema({
-	user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-	name: { type: String, required: true }, // e.g., "HDFC Bank", "SBI Credit"
-	type: {
-		type: String,
-		enum: ['Bank', 'Cash', 'Credit Card', 'Loan'],
-		required: true,
+const {
+	SUPPORTED_ACCOUNT_TYPES,
+	SUPPORTED_CURRENCIES,
+} = require('../utils/constants');
+
+const accountSchema = new mongoose.Schema(
+	{
+		user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+		name: { type: String, required: true, trim: true },
+		type: {
+			type: String,
+			enum: SUPPORTED_ACCOUNT_TYPES,
+			required: true,
+		},
+		currency: { type: String, required: true, enum: SUPPORTED_CURRENCIES },
+		balance: { type: Number, default: 0 },
+		isActive: { type: Boolean, default: true },
 	},
-	currency: { type: String, required: true },
-	balance: { type: Number, default: 0 },
+	{ timestamps: true },
+);
+
+accountSchema.index(
+	{ user: 1, name: 1 },
+	{ unique: true, collation: { locale: 'en', strength: 2 } },
+);
+
+accountSchema.set('toJSON', {
+	transform: (document, returnedObject) => {
+		returnedObject.id = returnedObject._id.toString();
+		delete returnedObject._id;
+		delete returnedObject.__v;
+	},
 });
+
+module.exports = mongoose.model('Account', accountSchema);

@@ -10,4 +10,23 @@ const SUPPORTED_CURRENCIES = [
 	'PHP',
 ];
 
-module.exports = { SUPPORTED_CURRENCIES };
+const CATEGORY_COLORS = [
+	'red',
+	'peach',
+	'yellow',
+	'green',
+	'teal',
+	'sky',
+	'mauve',
+	'pink',
+	'lavender',
+	'blue',
+];
+
+const SUPPORTED_ACCOUNT_TYPES = ['Bank', 'Cash', 'Credit Card', 'Loan'];
+
+module.exports = {
+	SUPPORTED_CURRENCIES,
+	CATEGORY_COLORS,
+	SUPPORTED_ACCOUNT_TYPES,
+};
