@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const {
 	SUPPORTED_ACCOUNT_TYPES,
 	SUPPORTED_CURRENCIES,

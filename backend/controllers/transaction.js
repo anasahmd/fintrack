@@ -1,12 +1,9 @@
-const transactionRouter = require('express').Router();
+const mongoose = require('mongoose');
 const Transaction = require('../models/transaction');
 const Category = require('../models/category');
 const Account = require('../models/account');
 
-const {
-	transactionSchema,
-	updateTransactionSchema,
-} = require('../validations/transaction');
+const { transactionSchema } = require('../validations/transaction');
 
 //!!! Add pagination
 const getAllTransaction = async (request, response) => {
@@ -94,6 +91,7 @@ const postTransaction = async (request, response) => {
 		return response.status(201).json(savedTransaction);
 	} catch (e) {
 		await session.abortTransaction();
+		console.log(e);
 
 		return response
 			.status(400)
@@ -103,63 +101,142 @@ const postTransaction = async (request, response) => {
 	}
 };
 
-const updateTransaction = async (request, response, next) => {
-	const transaction = await Transaction.findById(request.params.id);
-
-	if (!transaction) {
-		return response.status(404).json({ error: 'Transaction not found' });
-	}
-
-	if (request.user.id.toString() !== transaction.user.toString()) {
-		return response.status(403).json({ error: 'User not authorized' });
-	}
-
+const updateTransaction = async (request, response) => {
 	try {
 		await transactionSchema.validateAsync(request.body);
 	} catch (e) {
 		return response.status(400).json({ error: e.details[0].message });
 	}
 
-	const category = await Category.findById(request.body.category);
+	const session = await mongoose.startSession();
+	session.startTransaction();
 
-	if (!category) {
-		return response.status(400).json({ error: 'Category not found' });
+	try {
+		const originalTx = await Transaction.findOne({
+			_id: request.params.id,
+			user: request.user.id,
+		}).session(session);
+
+		if (!originalTx) {
+			await session.abortTransaction();
+			return response.status(404).json({ error: 'Transaction not found' });
+		}
+
+		const category = await Category.findById(request.body.category).session(
+			session,
+		);
+		if (!category || category.type !== request.body.type) {
+			await session.abortTransaction();
+			return response
+				.status(400)
+				.json({ error: 'Invalid Category or Type mismatch' });
+		}
+
+		// It handles user changing the account while updating
+		const oldAccount = await Account.findById(originalTx.account).session(
+			session,
+		);
+
+		const isChangingAccount =
+			originalTx.account.toString() !== request.body.account;
+
+		const newAccount = isChangingAccount
+			? await Account.findById(request.body.account).session(session)
+			: oldAccount;
+
+		if (!oldAccount || !newAccount) {
+			await session.abortTransaction();
+			return response.status(404).json({ error: 'Account not found' });
+		}
+
+		// Reverses the old transaction amount
+		if (originalTx.type === 'Expense') {
+			oldAccount.balance += originalTx.amount;
+		} else if (originalTx.type === 'Income') {
+			oldAccount.balance -= originalTx.amount;
+		}
+
+		// Adds the new transaction amount
+		if (request.body.type === 'Expense') {
+			newAccount.balance -= request.body.amount;
+		} else if (request.body.type === 'Income') {
+			newAccount.balance += request.body.amount;
+		}
+
+		await oldAccount.save({ session });
+		if (isChangingAccount) {
+			await newAccount.save({ session });
+		}
+
+		originalTx.set(request.body);
+		await originalTx.save({ session });
+
+		await session.commitTransaction();
+
+		await originalTx.populate('category', 'name emoji color');
+		await originalTx.populate('account', 'name type');
+
+		return response.status(200).json(originalTx);
+	} catch (error) {
+		await session.abortTransaction();
+		return response.status(400).json({ error: 'Failed to update transaction' });
+	} finally {
+		session.endSession();
 	}
-
-	if (category.type !== request.body.type) {
-		return response.status(400).json({
-			error: `Type mismatch: You cannot assign a ${category.type} category to an ${request.body.type} transaction.`,
-		});
-	}
-
-	const updatedTransaction = await Transaction.findByIdAndUpdate(
-		transaction.id,
-		request.body,
-		{ new: true, runValidators: true, context: 'query' },
-	).populate('category', 'name emoji');
-
-	return response.status(200).json(updatedTransaction);
 };
 
-const deleteTransaction = async (request, response, next) => {
-	const transaction = await Transaction.findById(request.params.id);
+const deleteTransaction = async (request, response) => {
+	const session = await mongoose.startSession();
+	session.startTransaction();
 
-	if (!transaction) {
-		return response.status(404).json({ error: 'Transaction not found' });
+	try {
+		const transaction = await Transaction.findOne({
+			_id: request.params.id,
+			user: request.user.id,
+		}).session(session);
+
+		if (!transaction) {
+			await session.abortTransaction();
+			return response.status(404).json({ error: 'Transaction not found' });
+		}
+
+		const account = await Account.findById(transaction.account).session(
+			session,
+		);
+
+		if (!account) {
+			await session.abortTransaction();
+			return response
+				.status(404)
+				.json({ error: 'Associated account not found' });
+		}
+
+		if (transaction.type === 'Expense') {
+			account.balance += transaction.amount;
+		} else if (transaction.type === 'Income') {
+			account.balance -= transaction.amount;
+		}
+
+		await account.save({ session });
+		await transaction.deleteOne({ session });
+
+		await session.commitTransaction();
+
+		return response.status(204).end();
+	} catch (error) {
+		await session.abortTransaction();
+		return response.status(400).json({ error: 'Failed to delete transaction' });
+	} finally {
+		session.endSession();
 	}
-
-	if (transaction.user.toString() !== request.user.id.toString()) {
-		return response.status(403).json({ error: 'User not authorized' });
-	}
-
-	await transaction.deleteOne();
-
-	return response.status(204).end();
 };
 
-//! Get all tags the user has used
-const getAllTags = async (request, response, next) => {
-	return response.status(501).json({ error: 'Not Implemented' });
+const getAllTags = async (request, response) => {
+	const tags = await Transaction.distinct('tags', { user: request.user.id });
+
+	tags.sort((a, b) => a.localeCompare(b));
+
+	return response.status(200).json(tags);
 };
 
 module.exports = {

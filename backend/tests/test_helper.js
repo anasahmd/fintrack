@@ -2,7 +2,7 @@ const Transaction = require('../models/transaction');
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const { default: mongoose } = require('mongoose');
+const mongoose = require('mongoose');
 
 // !!! Changed the type to expense for all so that test cases can pass for now
 const demoTransactions = [
