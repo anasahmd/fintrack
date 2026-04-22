@@ -1,3 +1,8 @@
+const supertest = require('supertest');
+const app = require('../app');
+
+const api = supertest(app);
+
 describe('POST /api/transactions', () => {
 	const validTransaction = {
 		amount: 10,

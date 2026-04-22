@@ -1,50 +1,106 @@
 const transactionRouter = require('express').Router();
 const Transaction = require('../models/transaction');
 const Category = require('../models/category');
+const Account = require('../models/account');
+
 const {
 	transactionSchema,
 	updateTransactionSchema,
 } = require('../validations/transaction');
 
-const getAllTransaction = async (request, response, next) => {
+//!!! Add pagination
+const getAllTransaction = async (request, response) => {
 	const transactions = await Transaction.find({ user: request.user.id })
 		.populate('category', 'name emoji')
+		.populate('account', 'name type')
 		.sort({ date: -1 });
 	return response.status(200).json(transactions);
 };
 
-const getTransaction = async (request, response, next) => {
-	const transaction = await Transaction.findById(request.params.id).populate(
-		'category',
-		'name emoji',
-	);
+const getTransaction = async (request, response) => {
+	const transaction = await Transaction.findOne({
+		_id: request.params.id,
+		user: request.user.id,
+	})
+		.populate('category', 'name emoji color')
+		.populate('account', 'name type isActive');
 
 	if (!transaction) {
 		return response.status(404).json({ error: 'Transaction not found' });
 	}
 
-	if (request.user.id.toString() !== transaction.user.toString()) {
-		return response.status(403).json({ error: 'User not authorized' });
-	}
 	return response.status(200).json(transaction);
 };
 
-const postTransaction = async (request, response, next) => {
+const postTransaction = async (request, response) => {
 	try {
 		await transactionSchema.validateAsync(request.body);
 	} catch (e) {
 		return response.status(400).json({ error: e.details[0].message });
 	}
 
-	const newTransaction = new Transaction({
-		...request.body,
-		user: request.user.id,
-	});
+	const session = await mongoose.startSession();
+	session.startTransaction();
 
-	const savedTransaction = await newTransaction.save();
-	await savedTransaction.populate('category', 'name emoji');
+	try {
+		const {
+			title,
+			amount,
+			type,
+			category,
+			account,
+			currency,
+			tags,
+			date,
+			description,
+		} = request.body;
 
-	return response.status(201).json(savedTransaction);
+		const targetAccount = await Account.findOne({
+			_id: account,
+			user: request.user.id,
+			isActive: true,
+		}).session(session);
+
+		if (!targetAccount) {
+			await session.abortTransaction();
+			return response
+				.status(404)
+				.json({ error: 'Account not found or inactive' });
+		}
+
+		const [savedTransaction] = await Transaction.create(
+			[
+				{
+					...request.body,
+					user: request.user.id,
+				},
+			],
+			{ session },
+		);
+
+		if (type === 'Expense') {
+			targetAccount.balance -= amount;
+		} else if (type === 'Income') {
+			targetAccount.balance += amount;
+		}
+
+		await targetAccount.save({ session });
+
+		await session.commitTransaction();
+
+		await savedTransaction.populate('category', 'name emoji color');
+		await savedTransaction.populate('account', 'name type');
+
+		return response.status(201).json(savedTransaction);
+	} catch (e) {
+		await session.abortTransaction();
+
+		return response
+			.status(400)
+			.json({ error: 'Failed to process transaction' });
+	} finally {
+		session.endSession();
+	}
 };
 
 const updateTransaction = async (request, response, next) => {

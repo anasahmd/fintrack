@@ -34,6 +34,11 @@ const transactionSchema = Joi.object({
 		'any.required': 'Category is required',
 	}),
 
+	account: Joi.string().min(1).required().messages({
+		'string.empty': 'Account cannot be empty',
+		'any.required': 'Account is required',
+	}),
+
 	description: Joi.string()
 		.allow('') // Allow empty string
 		.max(250)
