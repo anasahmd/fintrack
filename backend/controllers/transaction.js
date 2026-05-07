@@ -2,7 +2,6 @@ const mongoose = require('mongoose');
 const Transaction = require('../models/transaction');
 const Category = require('../models/category');
 const Account = require('../models/account');
-
 const { transactionSchema } = require('../validations/transaction');
 
 //!!! Add pagination

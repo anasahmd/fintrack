@@ -21,9 +21,17 @@ const CATEGORY_COLORS = [
 	'pink',
 	'lavender',
 	'blue',
+	'grey',
 ];
 
-const SUPPORTED_ACCOUNT_TYPES = ['Bank', 'Cash', 'Credit Card', 'Loan'];
+const SUPPORTED_ACCOUNT_TYPES = [
+	'Bank',
+	'Cash',
+	'Credit Card',
+	'Loan',
+	'Investment',
+	'Other',
+];
 
 module.exports = {
 	SUPPORTED_CURRENCIES,

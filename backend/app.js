@@ -7,6 +7,7 @@ const logger = require('./utils/logger');
 const authRouter = require('./routes/auth');
 const transactionRouter = require('./routes/transaction');
 const categoryRouter = require('./routes/category');
+const accountRouter = require('./routes/account');
 const userExtractor = require('./middlewares/userExtractor');
 
 const app = express();
@@ -32,6 +33,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/transactions', userExtractor, transactionRouter);
 app.use('/api/categories', userExtractor, categoryRouter);
+app.use('/api/accounts', userExtractor, accountRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
