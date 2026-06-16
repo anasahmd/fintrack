@@ -76,7 +76,7 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 			type: type || 'Expense',
 			currency: initialData?.currency || user?.currency,
 			category:
-				initialData?.type === type ? initialData?.category?.id || '' : '',
+				initialData?.type === type ? initialData?.category?._id || '' : '',
 			description: initialData?.description || '',
 			tags: initialData?.tags?.join(', ') || '',
 			date: initialData?.date ? new Date(initialData.date) : new Date(),
@@ -114,7 +114,7 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 		try {
 			if (initialData) {
 				await dispatch(
-					editTransaction({ id: initialData.id, apiPayload }),
+					editTransaction({ id: initialData._id, apiPayload }),
 				).unwrap();
 				toast.success('Transaction edited');
 				setSearchParams(
@@ -143,7 +143,7 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 
 	const handleDelete = async () => {
 		try {
-			await dispatch(deleteTransaction(initialData.id)).unwrap();
+			await dispatch(deleteTransaction(initialData._id)).unwrap();
 			setIsModalOpen(false);
 			toast.success('Transaction deleted');
 		} catch (e) {
@@ -267,7 +267,7 @@ const TransactionForm = ({ type, setIsModalOpen, initialData }) => {
 								</SelectTrigger>
 								<SelectContent position="item-aligned">
 									{filteredCategories.map((cat) => (
-										<SelectItem key={cat.id} value={cat.id}>
+										<SelectItem key={cat._id} value={cat._id}>
 											<span className="mr-2">
 												<Emoji text={cat.emoji} />
 											</span>

@@ -84,14 +84,14 @@ const register = async (request, response) => {
 
 	const userForToken = {
 		email: savedUser.email,
-		id: savedUser._id,
+		_id: savedUser._id,
 	};
 
 	const token = jwt.sign(userForToken, config.JWT_SECRET);
 
 	response.status(201).json({
 		token,
-		id: savedUser._id,
+		_id: savedUser._id,
 		name: savedUser.name,
 		email: savedUser.email,
 		currency: savedUser.currency,
@@ -118,7 +118,7 @@ const login = async (request, response) => {
 
 	const userForToken = {
 		email: user.email,
-		id: user._id,
+		_id: user._id,
 	};
 
 	const token = jwt.sign(userForToken, config.JWT_SECRET);

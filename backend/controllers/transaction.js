@@ -6,7 +6,7 @@ const { transactionSchema } = require('../validations/transaction');
 
 //!!! Add pagination
 const getAllTransaction = async (request, response) => {
-	const transactions = await Transaction.find({ user: request.user.id })
+	const transactions = await Transaction.find({ user: request.user._id })
 		.populate('category', 'name emoji')
 		.populate('account', 'name type')
 		.sort({ date: -1 });
@@ -16,7 +16,7 @@ const getAllTransaction = async (request, response) => {
 const getTransaction = async (request, response) => {
 	const transaction = await Transaction.findOne({
 		_id: request.params.id,
-		user: request.user.id,
+		user: request.user._id,
 	})
 		.populate('category', 'name emoji color')
 		.populate('account', 'name type isActive');
@@ -53,7 +53,7 @@ const postTransaction = async (request, response) => {
 
 		const targetAccount = await Account.findOne({
 			_id: account,
-			user: request.user.id,
+			user: request.user._id,
 			isActive: true,
 		}).session(session);
 
@@ -68,7 +68,7 @@ const postTransaction = async (request, response) => {
 			[
 				{
 					...request.body,
-					user: request.user.id,
+					user: request.user._id,
 				},
 			],
 			{ session },
@@ -113,7 +113,7 @@ const updateTransaction = async (request, response) => {
 	try {
 		const originalTx = await Transaction.findOne({
 			_id: request.params.id,
-			user: request.user.id,
+			user: request.user._id,
 		}).session(session);
 
 		if (!originalTx) {
@@ -191,7 +191,7 @@ const deleteTransaction = async (request, response) => {
 	try {
 		const transaction = await Transaction.findOne({
 			_id: request.params.id,
-			user: request.user.id,
+			user: request.user._id,
 		}).session(session);
 
 		if (!transaction) {
@@ -231,7 +231,7 @@ const deleteTransaction = async (request, response) => {
 };
 
 const getAllTags = async (request, response) => {
-	const tags = await Transaction.distinct('tags', { user: request.user.id });
+	const tags = await Transaction.distinct('tags', { user: request.user._id });
 
 	tags.sort((a, b) => a.localeCompare(b));
 

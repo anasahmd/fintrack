@@ -61,7 +61,7 @@ export const transactionSlice = createSlice({
 			})
 			.addCase(editTransaction.fulfilled, (state, action) => {
 				const index = state.items.findIndex(
-					(item) => item.id === action.payload.id,
+					(item) => item._id === action.payload._id,
 				);
 				if (index !== -1) {
 					state.items[index] = action.payload;
@@ -69,7 +69,7 @@ export const transactionSlice = createSlice({
 				}
 			})
 			.addCase(deleteTransaction.fulfilled, (state, action) => {
-				state.items = state.items.filter((item) => item.id !== action.payload);
+				state.items = state.items.filter((item) => item._id !== action.payload);
 			});
 	},
 });

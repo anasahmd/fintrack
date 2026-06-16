@@ -11,7 +11,7 @@ const TransactionContent = ({ setIsModalOpen }) => {
 	const { items: transactions } = useSelector((state) => state.transactions);
 
 	const editTransactionData = transactions.find(
-		(transaction) => transaction.id === editId,
+		(transaction) => transaction._id === editId,
 	);
 
 	const [activeTab, setActiveTab] = useState(

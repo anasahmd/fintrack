@@ -7,7 +7,7 @@ const Category = require('../models/category');
 const getAllAccount = async (request, response) => {
 	try {
 		const accounts = await Account.find({
-			user: request.user.id,
+			user: request.user._id,
 			isActive: true,
 		}).sort({ name: 1 });
 
@@ -33,7 +33,7 @@ const postAccount = async (request, response) => {
 
 	try {
 		const [account] = await Account.create(
-			[{ ...validatedData, user: request.user.id }],
+			[{ ...validatedData, user: request.user._id }],
 			{ session },
 		);
 
@@ -44,7 +44,7 @@ const postAccount = async (request, response) => {
 			let systemCategory = await Category.findOne({
 				name: 'Starting Balance',
 				type: transactionType,
-				user: request.user.id,
+				user: request.user._id,
 			}).session(session);
 
 			if (!systemCategory) {
@@ -55,7 +55,7 @@ const postAccount = async (request, response) => {
 							emoji: '🏦',
 							color: 'grey',
 							type: transactionType,
-							user: request.user.id,
+							user: request.user._id,
 						},
 					],
 					{ session },
@@ -67,7 +67,7 @@ const postAccount = async (request, response) => {
 			await Transaction.create(
 				[
 					{
-						user: request.user.id,
+						user: request.user._id,
 						title: 'Initial Funding',
 						amount: absoluteAmount,
 						account: account._id,

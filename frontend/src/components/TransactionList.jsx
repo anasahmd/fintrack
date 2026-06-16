@@ -26,10 +26,10 @@ const TransactionList = ({ transactions }) => {
 				<div className="space-y-8">
 					{transactions.map((transaction, index) => (
 						<div
-							key={transaction.id}
+							key={transaction._id}
 							className="flex border-accent border-2 p-4 rounded-xl gap-3 items-center mb-3 cursor-pointer"
 							onClick={() =>
-								setSearchParams({ editTransaction: transaction.id })
+								setSearchParams({ editTransaction: transaction._id })
 							}
 						>
 							<div className="text-lg shrink-0">
