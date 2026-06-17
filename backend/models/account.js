@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const {
+import mongoose from 'mongoose';
+import {
 	SUPPORTED_ACCOUNT_TYPES,
 	SUPPORTED_CURRENCIES,
-} = require('../utils/constants');
+} from '../utils/constants.js';
 
 const accountSchema = new mongoose.Schema(
 	{
@@ -32,4 +32,4 @@ accountSchema.set('toJSON', {
 	},
 });
 
-module.exports = mongoose.model('Account', accountSchema);
+export default mongoose.model('Account', accountSchema);

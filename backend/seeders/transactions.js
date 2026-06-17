@@ -1,9 +1,9 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const Transaction = require('../models/transaction');
-const User = require('../models/user');
-const Category = require('../models/category');
-const { MONGODB_URI } = require('../utils/config');
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
+import Transaction from '../models/transaction.js';
+import User from '../models/user.js';
+import Category from '../models/category.js';
+import { MONGODB_URI } from '../utils/config.js';
 
 const seedDatabase = async () => {
 	try {

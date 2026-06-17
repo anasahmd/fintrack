@@ -1,8 +1,8 @@
-const Joi = require('joi');
-const {
+import Joi from 'joi';
+import {
 	SUPPORTED_ACCOUNT_TYPES,
 	SUPPORTED_CURRENCIES,
-} = require('../utils/constants');
+} from '../utils/constants.js';
 
 const accountSchema = Joi.object({
 	name: Joi.string().trim().min(2).max(50).required().messages({
@@ -53,7 +53,7 @@ const updateAccountSchema = Joi.object({
 	}),
 });
 
-module.exports = {
+export {
 	accountSchema,
 	updateAccountSchema,
 };

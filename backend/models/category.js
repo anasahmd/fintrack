@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { CATEGORY_COLORS } = require('../utils/constants');
+import mongoose from 'mongoose';
+import { CATEGORY_COLORS } from '../utils/constants.js';
 
 const categorySchema = mongoose.Schema(
 	{
@@ -43,4 +43,4 @@ categorySchema.set('toJSON', {
 	},
 });
 
-module.exports = mongoose.model('Category', categorySchema);
+export default mongoose.model('Category', categorySchema);

@@ -1,9 +1,9 @@
-const bcrypt = require('bcrypt');
-const User = require('../models/user');
-const Category = require('../models/category');
-const config = require('../utils/config');
-const jwt = require('jsonwebtoken');
-const { registerSchema, loginSchema } = require('../validations/auth');
+import bcrypt from 'bcrypt';
+import User from '../models/user.js';
+import Category from '../models/category.js';
+import * as config from '../utils/config.js';
+import jwt from 'jsonwebtoken';
+import { registerSchema, loginSchema } from '../validations/auth.js';
 
 const DEFAULT_CATEGORIES = [
 	// --- INCOME ---
@@ -131,4 +131,4 @@ const login = async (request, response) => {
 	});
 };
 
-module.exports = { register, login };
+export default { register, login };

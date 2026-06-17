@@ -1,10 +1,11 @@
-const authController = require('../controllers/auth');
-const catchAsync = require('../utils/catchAsync');
+import authController from '../controllers/auth.js';
 
-const authRouter = require('express').Router();
 
-authRouter.post('/register', catchAsync(authController.register));
+import express from 'express';
+const authRouter = express.Router();
 
-authRouter.post('/login', catchAsync(authController.login));
+authRouter.post('/register', authController.register);
 
-module.exports = authRouter;
+authRouter.post('/login', authController.login);
+
+export default authRouter;

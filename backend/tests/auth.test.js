@@ -1,11 +1,11 @@
-const assert = require('node:assert');
-const bcrypt = require('bcrypt');
-const { test, after, beforeEach, describe } = require('node:test');
-const mongoose = require('mongoose');
-const supertest = require('supertest');
-const User = require('../models/user');
-const helper = require('./test_helper');
-const app = require('../app');
+import assert from 'node:assert';
+import bcrypt from 'bcrypt';
+import { test, after, beforeEach, describe } from 'node:test';
+import mongoose from 'mongoose';
+import supertest from 'supertest';
+import User from '../models/user.js';
+import helper from './test_helper.js';
+import app from '../app.js';
 
 const api = supertest(app);
 

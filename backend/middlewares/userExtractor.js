@@ -1,7 +1,7 @@
-const jwt = require('jsonwebtoken');
-const { JWT_SECRET } = require('../utils/config');
-const User = require('../models/user');
-const logger = require('../utils/logger');
+import jwt from 'jsonwebtoken';
+import { JWT_SECRET } from '../utils/config.js';
+import User from '../models/user.js';
+import logger from '../utils/logger.js';
 
 const userExtractor = async (request, response, next) => {
 	const authorization = request.get('authorization');
@@ -39,4 +39,4 @@ const userExtractor = async (request, response, next) => {
 	}
 };
 
-module.exports = userExtractor;
+export default userExtractor;

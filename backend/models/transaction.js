@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { SUPPORTED_CURRENCIES } = require('../utils/constants');
+import mongoose from 'mongoose';
+import { SUPPORTED_CURRENCIES } from '../utils/constants.js';
 
 const transactionSchema = mongoose.Schema(
 	{
@@ -66,4 +66,4 @@ transactionSchema.set('toJSON', {
 	},
 });
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+export default mongoose.model('Transaction', transactionSchema);

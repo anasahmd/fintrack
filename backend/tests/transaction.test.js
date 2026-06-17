@@ -1,14 +1,14 @@
-const mongoose = require('mongoose');
-const supertest = require('supertest');
-const assert = require('node:assert/strict');
-const { test, after, beforeEach, describe } = require('node:test');
+import mongoose from 'mongoose';
+import supertest from 'supertest';
+import assert from 'node:assert/strict';
+import { test, after, beforeEach, describe } from 'node:test';
 
-const app = require('../app');
-const helper = require('./test_helper');
-const Transaction = require('../models/transaction');
-const User = require('../models/user');
-const Account = require('../models/account');
-const Category = require('../models/category');
+import app from '../app.js';
+import helper from './test_helper.js';
+import Transaction from '../models/transaction.js';
+import User from '../models/user.js';
+import Account from '../models/account.js';
+import Category from '../models/category.js';
 
 const api = supertest(app);
 

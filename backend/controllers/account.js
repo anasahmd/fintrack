@@ -1,30 +1,20 @@
-const { default: mongoose } = require('mongoose');
-const Account = require('../models/account');
-const { accountSchema } = require('../validations/account');
-const Transaction = require('../models/transaction');
-const Category = require('../models/category');
+import mongoose from 'mongoose';
+import Account from '../models/account.js';
+import { accountSchema } from '../validations/account.js';
+import Transaction from '../models/transaction.js';
+import Category from '../models/category.js';
 
 const getAllAccount = async (request, response) => {
-	try {
-		const accounts = await Account.find({
-			user: request.user._id,
-			isActive: true,
-		}).sort({ name: 1 });
+	const accounts = await Account.find({
+		user: request.user._id,
+		isActive: true,
+	}).sort({ name: 1 });
 
-		return response.status(200).json(accounts);
-	} catch (error) {
-		console.error('Error fetching accounts:', error);
-		return response.status(500).json({ error: 'Failed to fetch accounts' });
-	}
+	return response.status(200).json(accounts);
 };
 
-const postAccount = async (request, response) => {
-	let validatedData;
-	try {
-		validatedData = await accountSchema.validateAsync(request.body);
-	} catch (e) {
-		return response.status(400).json({ error: e.details[0].message });
-	}
+const postAccount = async (request, response, next) => {
+	const validatedData = await accountSchema.validateAsync(request.body);
 
 	const initialBalance = Number(request.body.balance) || 0;
 
@@ -86,8 +76,7 @@ const postAccount = async (request, response) => {
 		return response.status(201).json(account);
 	} catch (error) {
 		await session.abortTransaction();
-		console.error('Failed to create account:', error);
-		return response.status(500).json({ error: 'Failed to create account' });
+		next(error);
 	} finally {
 		session.endSession();
 	}
@@ -99,4 +88,4 @@ const updateAccount = async (request, response) => {};
 // !!! Delete a single account
 const deleteAccount = async (request, response) => {};
 
-module.exports = { getAllAccount, postAccount, updateAccount, deleteAccount };
+export default { getAllAccount, postAccount, updateAccount, deleteAccount };

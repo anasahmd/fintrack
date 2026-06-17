@@ -1,8 +1,8 @@
-const Transaction = require('../models/transaction');
-const User = require('../models/user');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const mongoose = require('mongoose');
+import Transaction from '../models/transaction.js';
+import User from '../models/user.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
 // !!! Changed the type to expense for all so that test cases can pass for now
 const demoTransactions = [
@@ -75,7 +75,7 @@ const getAuthTokenAndUserId = async () => {
 
 	const userForToken = {
 		email: user.email,
-		id: user._id.toString(),
+		_id: user._id.toString(),
 	};
 
 	const token = jwt.sign(userForToken, process.env.JWT_SECRET);
@@ -90,7 +90,7 @@ const createTestUser = async (name, email, password) => {
 	return user._id.toString();
 };
 
-module.exports = {
+export default {
 	usersInDb,
 	transactionsInDb,
 	demoTransactions,

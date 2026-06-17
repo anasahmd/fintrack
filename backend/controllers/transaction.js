@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const Transaction = require('../models/transaction');
-const Category = require('../models/category');
-const Account = require('../models/account');
-const { transactionSchema } = require('../validations/transaction');
+import mongoose from 'mongoose';
+import Transaction from '../models/transaction.js';
+import Category from '../models/category.js';
+import Account from '../models/account.js';
+import { transactionSchema } from '../validations/transaction.js';
 
 //!!! Add pagination
 const getAllTransaction = async (request, response) => {
@@ -238,7 +238,7 @@ const getAllTags = async (request, response) => {
 	return response.status(200).json(tags);
 };
 
-module.exports = {
+export default {
 	getAllTransaction,
 	getTransaction,
 	postTransaction,

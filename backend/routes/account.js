@@ -1,12 +1,13 @@
-const catchAsync = require('../utils/catchAsync');
-const accountController = require('../controllers/account');
-const userExtractor = require('../middlewares/userExtractor');
 
-const accountRouter = require('express').Router();
+import accountController from '../controllers/account.js';
+import userExtractor from '../middlewares/userExtractor.js';
+
+import express from 'express';
+const accountRouter = express.Router();
 
 accountRouter
 	.route('/')
-	.get(catchAsync(accountController.getAllAccount))
-	.post(catchAsync(accountController.postAccount));
+	.get(accountController.getAllAccount)
+	.post(accountController.postAccount);
 
-module.exports = accountRouter;
+export default accountRouter;

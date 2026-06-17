@@ -33,7 +33,7 @@ const SUPPORTED_ACCOUNT_TYPES = [
 	'Other',
 ];
 
-module.exports = {
+export {
 	SUPPORTED_CURRENCIES,
 	CATEGORY_COLORS,
 	SUPPORTED_ACCOUNT_TYPES,

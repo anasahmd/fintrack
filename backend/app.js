@@ -1,14 +1,14 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const config = require('./utils/config');
-const middleware = require('./middlewares/common');
-const logger = require('./utils/logger');
-// const userRouter = require('./controllers/user');
-const authRouter = require('./routes/auth');
-const transactionRouter = require('./routes/transaction');
-const categoryRouter = require('./routes/category');
-const accountRouter = require('./routes/account');
-const userExtractor = require('./middlewares/userExtractor');
+import express from 'express';
+import mongoose from 'mongoose';
+import * as config from './utils/config.js';
+import middleware from './middlewares/common.js';
+import logger from './utils/logger.js';
+// import userRouter from './controllers/user.js';
+import authRouter from './routes/auth.js';
+import transactionRouter from './routes/transaction.js';
+import categoryRouter from './routes/category.js';
+import accountRouter from './routes/account.js';
+import userExtractor from './middlewares/userExtractor.js';
 
 const app = express();
 
@@ -38,4 +38,4 @@ app.use('/api/accounts', userExtractor, accountRouter);
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 
-module.exports = app;
+export default app;

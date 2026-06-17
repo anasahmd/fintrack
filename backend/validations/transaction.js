@@ -1,5 +1,5 @@
-const Joi = require('joi');
-const { SUPPORTED_CURRENCIES } = require('../utils/constants');
+import Joi from 'joi';
+import { SUPPORTED_CURRENCIES } from '../utils/constants.js';
 
 // Schema for validating the request body when creating and updating a transaction
 
@@ -108,7 +108,7 @@ const updateTransactionSchema = Joi.object({
 		'object.min': 'At least one field must be provided for update',
 	});
 
-module.exports = {
+export {
 	transactionSchema,
 	updateTransactionSchema,
 };

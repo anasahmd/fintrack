@@ -1,6 +1,7 @@
-const logger = require('../utils/logger');
+import logger from '../utils/logger.js';
 
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = process.env.PORT;
 
@@ -16,4 +17,4 @@ if (!JWT_SECRET && process.env.NODE_ENV !== 'test') {
 	process.exit(1);
 }
 
-module.exports = { MONGODB_URI, PORT, JWT_SECRET };
+export { MONGODB_URI, PORT, JWT_SECRET };

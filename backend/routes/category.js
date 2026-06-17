@@ -1,8 +1,9 @@
-const catchAsync = require('../utils/catchAsync');
-const categoryController = require('../controllers/category');
 
-const categoryRouter = require('express').Router();
+import categoryController from '../controllers/category.js';
 
-categoryRouter.route('/').get(catchAsync(categoryController.getAllCategories));
+import express from 'express';
+const categoryRouter = express.Router();
 
-module.exports = categoryRouter;
+categoryRouter.route('/').get(categoryController.getAllCategories);
+
+export default categoryRouter;

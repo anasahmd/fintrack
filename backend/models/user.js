@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const { SUPPORTED_CURRENCIES } = require('../utils/constants');
+import mongoose from 'mongoose';
+import { SUPPORTED_CURRENCIES } from '../utils/constants.js';
 
 const userSchema = new mongoose.Schema(
 	{
@@ -74,4 +74,4 @@ userSchema.set('toJSON', {
 	},
 });
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

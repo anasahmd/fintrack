@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from 'joi';
 
 // Schema for validating the request body during user registration.
 const registerSchema = Joi.object({
@@ -36,7 +36,7 @@ const loginSchema = Joi.object({
 	}),
 });
 
-module.exports = {
+export {
 	registerSchema,
 	loginSchema,
 };

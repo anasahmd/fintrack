@@ -1,22 +1,23 @@
-const catchAsync = require('../utils/catchAsync');
-const transactionController = require('../controllers/transaction');
-const userExtractor = require('../middlewares/userExtractor');
 
-const transactionRouter = require('express').Router();
+import transactionController from '../controllers/transaction.js';
+import userExtractor from '../middlewares/userExtractor.js';
+
+import express from 'express';
+const transactionRouter = express.Router();
 
 transactionRouter
 	.route('/')
-	.get(catchAsync(transactionController.getAllTransaction))
-	.post(catchAsync(transactionController.postTransaction));
+	.get(transactionController.getAllTransaction)
+	.post(transactionController.postTransaction);
 
 transactionRouter
 	.route('/tags')
-	.get(catchAsync(transactionController.getAllTags));
+	.get(transactionController.getAllTags);
 
 transactionRouter
 	.route('/:id')
-	.get(catchAsync(transactionController.getTransaction))
-	.put(catchAsync(transactionController.updateTransaction))
-	.delete(catchAsync(transactionController.deleteTransaction));
+	.get(transactionController.getTransaction)
+	.put(transactionController.updateTransaction)
+	.delete(transactionController.deleteTransaction);
 
-module.exports = transactionRouter;
+export default transactionRouter;
