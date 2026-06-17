@@ -13,3 +13,4 @@ const setGlobalToken = (token) => {
 };
 
 export { api, setGlobalToken };
+
